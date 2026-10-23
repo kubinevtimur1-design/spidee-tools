@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Тарифы — Spidee",
+  title: "Тарифы — Spydee",
   description:
-    "Прозрачные условия Spidee: пока что бесплатно для всех пользователей. Полный доступ к инструментам без скрытых списаний.",
-  keywords: ["тарифы spidee", "бесплатные seo инструменты", "сервис для маркетолога"],
+    "Прозрачные условия Spydee: пока что бесплатно для всех пользователей. Полный доступ к инструментам без скрытых списаний.",
+  keywords: ["тарифы spydee", "бесплатные seo инструменты", "сервис для маркетолога"],
   alternates: {
     canonical: "/pricing",
   },

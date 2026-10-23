@@ -15,8 +15,8 @@ export const metadata: Metadata = {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕷️</text></svg>",
   },
   title: {
-    default: "🕷️ Spidee — полезные инструменты для SEO-маркетолога",
-    template: "%s | 🕷️ Spidee",
+    default: "🕷️ Spydee — полезные инструменты для SEO-маркетолога",
+    template: "%s | 🕷️ Spydee",
   },
   description:
     "Минималистичный набор онлайн-инструментов для специалистов по продвижению: подсчет символов, генератор UTM и парсер тегов без перегруженных дашбордов.",
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    siteName: "🕷️ Spidee",
-    title: "🕷️ Spidee — полезные инструменты для SEO-маркетолога",
+    siteName: "🕷️ Spydee",
+    title: "🕷️ Spydee — полезные инструменты для SEO-маркетолога",
     description: "Быстрые инструменты для ежедневной SEO-рутины в один клик.",
   },
 };
@@ -53,14 +53,14 @@ export default function RootLayout({
       {
         "@type": "Organization",
         "@id": "https://spidee.ru/#organization",
-        name: "🕷️ Spidee",
+        name: "🕷️ Spydee",
         url: "https://spidee.ru",
       },
       {
         "@type": "WebSite",
         "@id": "https://spidee.ru/#website",
         url: "https://spidee.ru",
-        name: "🕷️ Spidee SEO Toolbox",
+        name: "🕷️ Spydee SEO Toolbox",
         publisher: {
           "@id": "https://spidee.ru/#organization",
         },
@@ -82,7 +82,7 @@ export default function RootLayout({
           <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
             <Link href="/" className="font-semibold text-lg tracking-tight text-black flex items-center gap-2">
               <span className="text-base leading-none">🕷️</span>
-              Spidee
+              Spydee
             </Link>
 
             <nav className="flex items-center space-x-8 text-sm font-normal text-gray-600">
@@ -134,7 +134,7 @@ export default function RootLayout({
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-sm">🕷️</span>
-                <span className="font-semibold text-gray-900 text-sm">Spidee</span>
+                <span className="font-semibold text-gray-900 text-sm">Spydee</span>
                 <span className="text-gray-400">— набор инструментов для удобной работы</span>
               </div>
               <div className="flex flex-wrap gap-6 text-gray-600">
@@ -145,7 +145,7 @@ export default function RootLayout({
             </div>
 
             <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-gray-400">
-            <p>© 2026 Spidee. Все права защищены.</p>              <div className="flex gap-4">
+            <p>© 2026 Spydee. Все права защищены.</p>              <div className="flex gap-4">
                 <Link href="#" className="hover:underline">Политика конфиденциальности</Link>
                 <Link href="#" className="hover:underline">Пользовательское соглашение</Link>
               </div>

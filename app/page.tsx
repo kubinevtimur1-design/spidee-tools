@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import HeroTitle from "./hero-title";
 
 export const metadata: Metadata = {
-  title: "Spidee — полезные инструменты для SEO-маркетолога",
+  title: "Spydee — полезные инструменты для SEO-маркетолога",
   description:
     "Простой и быстрый сервис для ежедневной рутины маркетолога: онлайн-подсчет длины сниппетов, генерация ссылок с UTM и парсер тегов.",
   keywords: ["seo сервис", "инструменты маркетолога", "генератор utm", "проверка title description"],
