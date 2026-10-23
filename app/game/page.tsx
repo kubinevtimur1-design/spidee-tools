@@ -14,7 +14,7 @@ export default function GamePage() {
           Небоскрёб Spidee 🏗️
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 max-w-xs sm:max-w-md mx-auto">
-          Отвлекитесь от анализа сниппетов и проверьте реакцию, как на олдскульных мобилках.
+          Пока мы строим сервис, вы можете отвлечься и построить свой небоскреб.
         </p>
       </div>
 
