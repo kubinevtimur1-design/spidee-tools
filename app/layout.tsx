@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import Navbar from "./navbar";
 import "./globals.css";
+import GameBanner from "./game-banner";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -127,6 +128,8 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        {/* Плавающая плашка с игрой */}
+     <GameBanner />
       </body>
     </html>
   );
