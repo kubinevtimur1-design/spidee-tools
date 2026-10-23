@@ -23,17 +23,20 @@ export default function HeroTitle() {
   const separator = currentWord === "любого" ? " " : "-";
 
   return (
-    <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-[#1d1d1f] leading-[1.12]">
+    <h1 className="text-[23px] xs:text-2xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#1d1d1f] leading-tight sm:leading-[1.12]">
       Полезные инструменты <br />
-      для{" "}
-      <span
-        className={`inline-block text-blue-600 transition-all duration-300 transform ${
-          fade ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-        }`}
-      >
-        {currentWord}
+      {/* whitespace-nowrap гарантирует, что 2-я строка никогда не разорвется на 3-ю */}
+      <span className="whitespace-nowrap">
+        для{" "}
+        <span
+          className={`inline-block text-blue-600 transition-all duration-300 transform ${
+            fade ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+          }`}
+        >
+          {currentWord}
+        </span>
+        {separator}маркетолога
       </span>
-      {separator}маркетолога
     </h1>
   );
 }
