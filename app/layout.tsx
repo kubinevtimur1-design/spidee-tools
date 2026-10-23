@@ -145,8 +145,7 @@ export default function RootLayout({
             </div>
 
             <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-gray-400">
-              <p>© {new Date().getFullYear()} Spidee. Все права защищены.</p>
-              <div className="flex gap-4">
+            <p>© 2026 Spidee. Все права защищены.</p>              <div className="flex gap-4">
                 <Link href="#" className="hover:underline">Политика конфиденциальности</Link>
                 <Link href="#" className="hover:underline">Пользовательское соглашение</Link>
               </div>
