@@ -31,16 +31,18 @@ export default function Navbar() {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/90" />
 
       <div className="relative mx-auto flex h-14 max-w-5xl items-center gap-3 px-4 sm:px-6">
-        <Link
-          href="/"
-          onClick={closeMenu}
-          className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-black"
-        >
-          <span className="text-base leading-none">🕷️</span>
-          <span>Spidy Tools</span>
-        </Link>
+        <div className="flex min-w-0 flex-1">
+          <Link
+            href="/"
+            onClick={closeMenu}
+            className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-black"
+          >
+            <span className="text-base leading-none">🕷️</span>
+            <span>Spidy Tools</span>
+          </Link>
+        </div>
 
-        <nav className="hidden flex-1 items-center justify-center gap-1 text-sm text-gray-600 md:flex">
+        <nav className="hidden shrink-0 items-center gap-1 text-sm text-gray-600 md:flex">
           <div className="group relative">
             <button
               type="button"
@@ -99,20 +101,11 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        <div className="ml-auto hidden shrink-0 md:block">
-          <Link
-            href="/counter/"
-            className="inline-flex items-center rounded-full bg-[#1d1d1f] px-4 py-1.5 text-xs font-medium text-white shadow-sm transition-colors hover:bg-black"
-          >
-            Открыть счётчик
-          </Link>
-        </div>
-
-        <div className="ml-auto flex items-center md:hidden">
+        <div className="flex flex-1 items-center justify-end">
           <button
             type="button"
             onClick={() => setMobileMenuOpen((open) => !open)}
-            className="rounded-xl p-2 text-gray-600 transition-colors hover:bg-white/60 hover:text-black focus:outline-none"
+            className="rounded-xl p-2 text-gray-600 transition-colors hover:bg-white/60 hover:text-black focus:outline-none md:hidden"
             aria-label={mobileMenuOpen ? "Закрыть меню" : "Открыть меню"}
             aria-expanded={mobileMenuOpen}
           >
@@ -214,14 +207,6 @@ export default function Navbar() {
               Игра
             </Link>
           </div>
-
-          <Link
-            href="/counter/"
-            onClick={closeMenu}
-            className="flex w-full items-center justify-center rounded-xl bg-[#1d1d1f] py-2.5 text-sm font-medium text-white"
-          >
-            Открыть счётчик
-          </Link>
         </div>
       )}
     </header>
