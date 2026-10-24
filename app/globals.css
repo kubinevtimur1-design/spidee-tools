@@ -46,3 +46,15 @@ body {
   background-size: 200% 100%;
   animation: darkShimmer 6s linear infinite;
 }
+@keyframes slowPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.animate-pulse-slow {
+  animation: slowPulse 6s ease-in-out infinite;
+}
