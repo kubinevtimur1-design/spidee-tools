@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { copyPngToClipboard } from "./copy-png";
 import { buildQrAsset, type QrAsset } from "./qr";
 import {
   EMPTY_UTM,
@@ -162,6 +163,13 @@ export default function UtmTool() {
   const [qr, setQr] = useState<{ url: string; asset: QrAsset | null } | null>(
     null,
   );
+  const [pngCopiedUrl, setPngCopiedUrl] = useState<string | null>(null);
+  const [pngHint, setPngHint] = useState<{
+    url: string;
+    text: string;
+    tone: "muted" | "error";
+  } | null>(null);
+  const pngCopyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const platform = PLATFORMS.find((item) => item.id === platformId)!;
 
@@ -258,6 +266,12 @@ export default function UtmTool() {
     };
   }, [qrReady, result]);
 
+  useEffect(() => {
+    return () => {
+      if (pngCopyTimer.current) clearTimeout(pngCopyTimer.current);
+    };
+  }, []);
+
   const generate = () => {
     if (!url.trim()) {
       setError("Введи URL страницы, которую нужно разметить.");
@@ -285,6 +299,34 @@ export default function UtmTool() {
     }
   };
 
+  const copyQrPng = async () => {
+    if (!qrFresh || !qrAsset) return;
+
+    const copiedUrl = result;
+    const outcome = await copyPngToClipboard(qrAsset.pngDataUrl, {
+      download: () => downloadPng(qrAsset.pngDataUrl),
+    });
+
+    if (pngCopyTimer.current) {
+      clearTimeout(pngCopyTimer.current);
+      pngCopyTimer.current = null;
+    }
+
+    if (outcome.status === "copied") {
+      setPngHint(null);
+      setPngCopiedUrl(copiedUrl);
+      pngCopyTimer.current = setTimeout(() => setPngCopiedUrl(null), 2000);
+      return;
+    }
+
+    setPngCopiedUrl(null);
+    setPngHint({
+      url: copiedUrl,
+      text: outcome.hint,
+      tone: outcome.status === "failed" ? "error" : "muted",
+    });
+  };
+
   const reset = () => {
     setUrl("");
     setUtm(EMPTY_UTM);
@@ -293,11 +335,17 @@ export default function UtmTool() {
     setCopied(false);
     setError("");
     setQr(null);
+    setPngCopiedUrl(null);
+    setPngHint(null);
+    if (pngCopyTimer.current) {
+      clearTimeout(pngCopyTimer.current);
+      pngCopyTimer.current = null;
+    }
   };
 
   return (
     <>
-      <main className="min-h-[80vh] bg-transparent px-4 pb-80 pt-6 sm:px-6 sm:pb-64 sm:pt-12">
+      <main className="min-h-[80vh] bg-transparent px-4 pb-96 pt-6 sm:px-6 sm:pb-64 sm:pt-12">
         <div className="mx-auto max-w-3xl">
           <div className="mb-6 text-center sm:mb-8">
             <h1 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
@@ -652,43 +700,69 @@ export default function UtmTool() {
               id="utm-qr"
               aria-labelledby="utm-qr-title"
               aria-busy={qrPending}
-              className="mt-3 flex items-center gap-3 border-t border-gray-100 pt-3"
+              className="mt-3 border-t border-gray-100 pt-3"
             >
-              <QrMark
-                ready={qrReady}
-                asset={qrFailed ? null : qrAsset}
-                fresh={qrFresh}
-              />
-              <div className="min-w-0">
-                <h2 id="utm-qr-title" className="text-sm font-semibold text-gray-900">
-                  QR-код
-                </h2>
-                <p className="mt-0.5 text-[11px] leading-4 text-gray-500">
-                  {!qrReady &&
-                    "Появится, когда ссылка начинается с http:// или https://."}
-                  {qrFailed && "Не вышло собрать — ссылка слишком длинная."}
-                  {qrFresh && "Для печати, офлайна или чата."}
-                  {qrReady && !qrFailed && !qrFresh && "Собираю QR…"}
-                </p>
-                {qrFresh && qrAsset && (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => void downloadPng(qrAsset.pngDataUrl)}
-                      className="min-h-11 rounded-lg bg-gray-900 px-3 text-sm font-medium text-white transition hover:bg-gray-800 motion-reduce:transition-none"
-                    >
-                      Скачать PNG
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => downloadSvg(qrAsset.svg)}
-                      className="min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 motion-reduce:transition-none"
-                    >
-                      Скачать SVG
-                    </button>
-                  </div>
-                )}
+              <div className="flex items-center gap-3">
+                <QrMark
+                  ready={qrReady}
+                  asset={qrFailed ? null : qrAsset}
+                  fresh={qrFresh}
+                />
+                <div className="min-w-0">
+                  <h2 id="utm-qr-title" className="text-sm font-semibold text-gray-900">
+                    QR-код
+                  </h2>
+                  <p className="mt-0.5 text-[11px] leading-4 text-gray-500">
+                    {!qrReady &&
+                      "Появится, когда ссылка начинается с http:// или https://."}
+                    {qrFailed && "Не вышло собрать — ссылка слишком длинная."}
+                    {qrFresh && "Для печати, офлайна или чата."}
+                    {qrReady && !qrFailed && !qrFresh && "Собираю QR…"}
+                  </p>
+                </div>
               </div>
+              {qrFresh && qrAsset && (
+                <div className="mt-2.5 flex flex-wrap gap-1.5 sm:gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void copyQrPng()}
+                    aria-describedby={
+                      pngHint?.url === result ? "utm-qr-copy-hint" : undefined
+                    }
+                    className="min-h-11 shrink-0 rounded-lg border border-gray-200 bg-white px-2.5 text-xs font-medium text-gray-800 transition hover:bg-gray-50 motion-reduce:transition-none sm:px-3 sm:text-sm"
+                  >
+                    {pngCopiedUrl === result ? "Скопировано" : "Скопировать PNG"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void downloadPng(qrAsset.pngDataUrl)}
+                    className="min-h-11 shrink-0 rounded-lg bg-gray-900 px-2.5 text-xs font-medium text-white transition hover:bg-gray-800 motion-reduce:transition-none sm:px-3 sm:text-sm"
+                  >
+                    Скачать PNG
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => downloadSvg(qrAsset.svg)}
+                    className="min-h-11 shrink-0 rounded-lg border border-gray-200 bg-white px-2.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 motion-reduce:transition-none sm:px-3 sm:text-sm"
+                  >
+                    Скачать SVG
+                  </button>
+                </div>
+              )}
+              <span className="sr-only" aria-live="polite">
+                {pngCopiedUrl === result ? "Скопировано" : ""}
+              </span>
+              {pngHint?.url === result && (
+                <p
+                  id="utm-qr-copy-hint"
+                  role="status"
+                  className={`mt-1.5 text-[11px] leading-4 ${
+                    pngHint.tone === "error" ? "text-red-700" : "text-gray-500"
+                  }`}
+                >
+                  {pngHint.text}
+                </p>
+              )}
             </div>
           </div>
         </div>
