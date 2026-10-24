@@ -9,7 +9,11 @@ export default function HeroSlime() {
     const el = ref.current;
     if (!el) return;
 
-    let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+    let tx = 0;
+    let ty = 0;
+    let x = 0;
+    let y = 0;
+    let raf = 0;
 
     const mouse = (e: PointerEvent) => {
       tx = (e.clientX / innerWidth - 0.5) * 45;
@@ -44,8 +48,9 @@ export default function HeroSlime() {
         <i className="b b4" />
       </div>
 
-      <div className="grain" />
-
+      <div className="matte-haze" />
+      <div className="grain grain-large" />
+      <div className="grain grain-fine" />
       <div className="word-clear-zone" />
 
       <style jsx>{`
@@ -55,7 +60,7 @@ export default function HeroSlime() {
           z-index: 0;
           overflow: hidden;
           pointer-events: none;
-          background: white;
+          background: #ffffff;
           perspective: 900px;
         }
 
@@ -74,7 +79,12 @@ export default function HeroSlime() {
             rotateX(2deg);
 
           transform-style: preserve-3d;
-          filter: blur(55px) saturate(140%);
+
+          /*
+            Чуть меньше насыщенности и больше рассеивания:
+            синий перестает выглядеть неоновым.
+          */
+          filter: blur(62px) saturate(112%) contrast(96%);
         }
 
         .b {
@@ -90,7 +100,9 @@ export default function HeroSlime() {
           height: 70%;
           left: 2%;
           top: 4%;
-          background: rgba(18, 102, 255, 0.72);
+
+          background: rgba(25, 105, 238, 0.7);
+
           animation: a 7s ease-in-out infinite alternate;
         }
 
@@ -99,7 +111,9 @@ export default function HeroSlime() {
           height: 67%;
           right: 0;
           top: 8%;
-          background: rgba(96, 174, 255, 0.58);
+
+          background: rgba(105, 176, 244, 0.6);
+
           animation: b 9s ease-in-out infinite alternate;
         }
 
@@ -108,7 +122,9 @@ export default function HeroSlime() {
           height: 58%;
           left: 28%;
           bottom: 0;
-          background: rgba(225, 235, 247, 0.92);
+
+          background: rgba(218, 230, 242, 0.94);
+
           animation: c 6s ease-in-out infinite alternate;
         }
 
@@ -117,45 +133,113 @@ export default function HeroSlime() {
           height: 50%;
           left: 33%;
           top: 18%;
-          background: rgba(255, 255, 255, 0.96);
+
+          background: rgba(255, 255, 255, 0.97);
+
           animation: d 8s ease-in-out infinite alternate;
         }
 
         /*
-          МЯГКОЕ МАТОВОЕ ЗЕРНО
+          Молочная дымка поверх цвета.
 
-          ВАЖНО:
-          оно больше не масштабируется через background-size.
-          SVG генерирует шум сразу с нужным размером частиц.
+          Она немного "съедает" цифровую чистоту градиента
+          и делает поверхность визуально матовой.
         */
-        .grain {
+        .matte-haze {
           position: absolute;
           inset: 0;
+          z-index: 3;
+
+          background:
+            radial-gradient(
+              ellipse 33% 30% at 31% 40%,
+              rgba(255, 255, 255, 0.22),
+              transparent 75%
+            ),
+            radial-gradient(
+              ellipse 38% 34% at 68% 57%,
+              rgba(238, 244, 250, 0.2),
+              transparent 78%
+            ),
+            radial-gradient(
+              ellipse 42% 36% at 50% 50%,
+              rgba(255, 255, 255, 0.1),
+              transparent 82%
+            );
+
+          filter: blur(16px);
+        }
+
+        /*
+          Крупная органическая фактура.
+
+          Здесь нет растягивания маленького noise SVG,
+          поэтому не должно быть тех пиксельных пятен,
+          которые были в прошлой версии.
+        */
+        .grain-large {
+          position: absolute;
+          inset: -10%;
           z-index: 5;
 
-          opacity: 0.11;
+          opacity: 0.16;
 
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cfilter id='noise' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.055' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeGaussianBlur stdDeviation='.65'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='.65'/%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420' viewBox='0 0 420 420'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018' numOctaves='3' seed='19' stitchTiles='stitch'/%3E%3CfeGaussianBlur stdDeviation='1.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.85'/%3E%3C/svg%3E");
 
           background-repeat: repeat;
-          background-size: 300px 300px;
+          background-size: 420px 420px;
 
           mix-blend-mode: soft-light;
 
           -webkit-mask-image: radial-gradient(
-            ellipse 46% 42% at 50% 50%,
+            ellipse 48% 43% at 50% 50%,
             black 0%,
-            rgba(0, 0, 0, 0.9) 38%,
-            rgba(0, 0, 0, 0.5) 60%,
-            transparent 82%
+            rgba(0, 0, 0, 0.9) 42%,
+            rgba(0, 0, 0, 0.48) 66%,
+            transparent 88%
           );
 
           mask-image: radial-gradient(
-            ellipse 46% 42% at 50% 50%,
+            ellipse 48% 43% at 50% 50%,
             black 0%,
-            rgba(0, 0, 0, 0.9) 38%,
-            rgba(0, 0, 0, 0.5) 60%,
-            transparent 82%
+            rgba(0, 0, 0, 0.9) 42%,
+            rgba(0, 0, 0, 0.48) 66%,
+            transparent 88%
+          );
+        }
+
+        /*
+          Второй слой — очень мелкое бумажное зерно.
+
+          Он нужен не для заметной "ряби", а чтобы большие
+          гладкие области перестали выглядеть идеально цифровыми.
+        */
+        .grain-fine {
+          position: absolute;
+          inset: 0;
+          z-index: 6;
+
+          opacity: 0.055;
+
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.115' numOctaves='2' seed='31' stitchTiles='stitch'/%3E%3CfeGaussianBlur stdDeviation='.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+
+          background-repeat: repeat;
+          background-size: 180px 180px;
+
+          mix-blend-mode: soft-light;
+
+          -webkit-mask-image: radial-gradient(
+            ellipse 47% 42% at 50% 50%,
+            black 0%,
+            rgba(0, 0, 0, 0.75) 50%,
+            transparent 87%
+          );
+
+          mask-image: radial-gradient(
+            ellipse 47% 42% at 50% 50%,
+            black 0%,
+            rgba(0, 0, 0, 0.75) 50%,
+            transparent 87%
           );
         }
 
@@ -172,14 +256,14 @@ export default function HeroSlime() {
 
           background: radial-gradient(
             ellipse at center,
-            rgba(255, 255, 255, 0.98) 0%,
-            rgba(255, 255, 255, 0.9) 20%,
-            rgba(247, 250, 255, 0.68) 42%,
-            rgba(240, 246, 255, 0.3) 65%,
+            rgba(255, 255, 255, 0.97) 0%,
+            rgba(255, 255, 255, 0.87) 20%,
+            rgba(247, 250, 253, 0.62) 44%,
+            rgba(240, 246, 252, 0.25) 67%,
             transparent 100%
           );
 
-          filter: blur(17px);
+          filter: blur(19px);
           z-index: 20;
         }
 
@@ -266,6 +350,7 @@ export default function HeroSlime() {
             transform:
               translate3d(28%, 18%, 180px)
               scale(0.55);
+
             opacity: 0.7;
           }
 
@@ -273,6 +358,7 @@ export default function HeroSlime() {
             transform:
               translate3d(-38%, -22%, -170px)
               scale(1.55);
+
             opacity: 1;
           }
 
@@ -280,15 +366,27 @@ export default function HeroSlime() {
             transform:
               translate3d(18%, 28%, 110px)
               scale(0.72);
+
             opacity: 0.8;
           }
         }
 
         @media (max-width: 900px) {
+          .cloud {
+            width: 900px;
+            height: 540px;
+          }
+
           .word-clear-zone {
             left: 50%;
             width: 260px;
             height: 110px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .b {
+            animation: none;
           }
         }
       `}</style>
