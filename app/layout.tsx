@@ -12,19 +12,15 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://spidytools.ru"),
-
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕷️</text></svg>",
   },
-
   title: {
     default: "🕷️ Spidy Tools — полезные инструменты для маркетолога",
     template: "%s | 🕷️ Spidy Tools",
   },
-
   description:
     "Минималистичный набор онлайн-инструментов для специалистов по продвижению: подсчет символов, генератор UTM и парсер тегов без перегруженных дашбордов.",
-
   keywords: [
     "SEO инструменты",
     "подсчет символов онлайн",
@@ -33,14 +29,11 @@ export const metadata: Metadata = {
     "лимиты title description",
     "инструменты маркетолога",
   ],
-
   authors: [{ name: "Spidy Tools" }],
-
   robots: {
     index: true,
     follow: true,
   },
-
   openGraph: {
     type: "website",
     locale: "ru_RU",
@@ -91,10 +84,9 @@ export default function RootLayout({
         className={`${inter.className} min-h-screen bg-[#fbfbfd] text-[#1d1d1f] flex flex-col selection:bg-blue-500 selection:text-white`}
       >
         <GameBanner />
-
         <Navbar />
 
-        <div className="flex-1 flex flex-col">{children}</div>
+        <div className="flex flex-1 flex-col">{children}</div>
 
         <Footer />
       </body>

@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
-
   const [activeNotice, setActiveNotice] = useState<{
     id: string;
     text: string;
@@ -28,9 +27,7 @@ export default function Navbar() {
     e.preventDefault();
     e.stopPropagation();
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
+    if (timerRef.current) clearTimeout(timerRef.current);
 
     setActiveNotice({ id, text });
 
@@ -46,24 +43,27 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-gray-200/70">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-50">
+      <div className="absolute inset-0 border-b border-white/70 bg-white/45 shadow-[0_1px_18px_rgba(0,0,0,0.035)] backdrop-blur-[28px] backdrop-saturate-150" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/90" />
+
+      <div className="relative mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
           onClick={closeMenu}
-          className="font-semibold text-lg tracking-tight text-black flex items-center gap-2"
+          className="flex items-center gap-2 text-lg font-semibold tracking-tight text-black"
         >
           <span className="text-base leading-none">🕷️</span>
           <span>Spidy Tools</span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-8 text-sm font-normal text-gray-600">
-          <div className="relative group py-4">
-            <button className="flex items-center gap-1 hover:text-black transition-colors focus:outline-none">
+        <nav className="hidden items-center space-x-8 text-sm text-gray-600 md:flex">
+          <div className="group relative py-4">
+            <button className="flex items-center gap-1 transition-colors hover:text-black focus:outline-none">
               <span>Инструменты</span>
 
               <svg
-                className="w-3.5 h-3.5 text-gray-400 group-hover:rotate-180 transition-transform duration-200"
+                className="h-3.5 w-3.5 text-gray-400 transition-transform duration-200 group-hover:rotate-180"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -77,17 +77,16 @@ export default function Navbar() {
               </svg>
             </button>
 
-            <div className="absolute left-0 top-full pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-1 group-hover:translate-y-0">
-              <div className="w-60 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/80 p-2 flex flex-col gap-1">
+            <div className="invisible absolute left-0 top-full translate-y-1 pt-1 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="flex w-52 flex-col gap-0.5 rounded-xl border border-white/70 bg-white/60 p-1.5 shadow-lg shadow-black/[0.07] backdrop-blur-2xl">
                 <Link
                   href="/counter"
-                  className="px-3.5 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors flex flex-col"
+                  className="flex flex-col rounded-lg px-2.5 py-2 transition-colors hover:bg-white/70"
                 >
-                  <span className="font-medium text-gray-900">
+                  <span className="text-[13px] font-medium text-gray-900">
                     Подсчет символов
                   </span>
-
-                  <span className="text-xs text-gray-400">
+                  <span className="text-[11px] leading-4 text-gray-500">
                     Лимиты под Title и Description
                   </span>
                 </Link>
@@ -101,26 +100,26 @@ export default function Navbar() {
                         "Генератора UTM пока нет, но скоро появится! 🛠️"
                       )
                     }
-                    className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors flex flex-col focus:outline-none"
+                    className="flex w-full flex-col rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/70 focus:outline-none"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900">
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <span className="text-[13px] font-medium text-gray-900">
                         Генератор UTM
                       </span>
 
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 font-medium">
+                      <span className="rounded-md bg-black/[0.04] px-1.5 py-0.5 text-[9px] font-medium text-gray-500">
                         скоро
                       </span>
                     </div>
 
-                    <span className="text-xs text-gray-400">
+                    <span className="text-[11px] leading-4 text-gray-500">
                       Разметка ссылок без ошибок
                     </span>
                   </button>
 
                   {activeNotice?.id === "tool-utm" && (
-                    <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 duration-200 pointer-events-none">
-                      <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
+                    <div className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-[#1d1d1f] px-2.5 py-1.5 text-[11px] font-medium text-white shadow-xl shadow-black/15">
+                      <div className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 bg-[#1d1d1f]" />
                       {activeNotice.text}
                     </div>
                   )}
@@ -135,26 +134,26 @@ export default function Navbar() {
                         "Выгрузка meta в разработке, скоро откроем! 🔍"
                       )
                     }
-                    className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-gray-100/80 transition-colors flex flex-col focus:outline-none"
+                    className="flex w-full flex-col rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/70 focus:outline-none"
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900">
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <span className="text-[13px] font-medium text-gray-900">
                         Выгрузка meta
                       </span>
 
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 font-medium">
+                      <span className="rounded-md bg-black/[0.04] px-1.5 py-0.5 text-[9px] font-medium text-gray-500">
                         скоро
                       </span>
                     </div>
 
-                    <span className="text-xs text-gray-400">
+                    <span className="text-[11px] leading-4 text-gray-500">
                       Парсинг тегов по списку URL
                     </span>
                   </button>
 
                   {activeNotice?.id === "tool-meta" && (
-                    <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 duration-200 pointer-events-none">
-                      <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
+                    <div className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-[#1d1d1f] px-2.5 py-1.5 text-[11px] font-medium text-white shadow-xl shadow-black/15">
+                      <div className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 bg-[#1d1d1f]" />
                       {activeNotice.text}
                     </div>
                   )}
@@ -163,10 +162,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Link
-            href="/pricing"
-            className="hover:text-black transition-colors"
-          >
+          <Link href="/pricing" className="transition-colors hover:text-black">
             Тарифы
           </Link>
 
@@ -179,14 +175,14 @@ export default function Navbar() {
                   "Контактов пока нет, но скоро появятся! 📬"
                 )
               }
-              className="hover:text-black transition-colors focus:outline-none"
+              className="transition-colors hover:text-black focus:outline-none"
             >
               Контакты
             </button>
 
             {activeNotice?.id === "contacts" && (
-              <div className="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-top-1 duration-200 pointer-events-none">
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
+              <div className="pointer-events-none absolute left-1/2 top-full z-50 mt-2.5 -translate-x-1/2 whitespace-nowrap rounded-xl bg-[#1d1d1f] px-3 py-1.5 text-xs font-medium text-white shadow-xl shadow-black/15">
+                <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-[#1d1d1f]" />
                 {activeNotice.text}
               </div>
             )}
@@ -201,21 +197,21 @@ export default function Navbar() {
                   "Блога пока нет, но скоро появится! 📝"
                 )
               }
-              className="hover:text-black transition-colors focus:outline-none"
+              className="transition-colors hover:text-black focus:outline-none"
             >
               Блог
             </button>
 
             {activeNotice?.id === "blog" && (
-              <div className="absolute top-full mt-2.5 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-top-1 duration-200 pointer-events-none">
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
+              <div className="pointer-events-none absolute left-1/2 top-full z-50 mt-2.5 -translate-x-1/2 whitespace-nowrap rounded-xl bg-[#1d1d1f] px-3 py-1.5 text-xs font-medium text-white shadow-xl shadow-black/15">
+                <div className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-[#1d1d1f]" />
                 {activeNotice.text}
               </div>
             )}
           </div>
         </nav>
 
-        <div className="hidden md:flex items-center relative">
+        <div className="relative hidden items-center md:flex">
           <button
             onClick={(e) =>
               triggerNotice(
@@ -224,28 +220,28 @@ export default function Navbar() {
                 "Личный кабинет пока в разработке! 🔑"
               )
             }
-            className="px-4 py-1.5 rounded-full border border-gray-300 text-gray-700 text-xs font-medium hover:bg-gray-100 hover:text-black transition-all focus:outline-none"
+            className="rounded-full border border-white/80 bg-white/45 px-4 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-white/70 hover:text-black focus:outline-none"
           >
             Личный кабинет
           </button>
 
           {activeNotice?.id === "cabinet" && (
-            <div className="absolute top-full mt-2.5 right-0 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-top-1 duration-200 pointer-events-none">
-              <div className="absolute -top-1 right-6 w-2 h-2 bg-[#1d1d1f] rotate-45" />
+            <div className="pointer-events-none absolute right-0 top-full z-50 mt-2.5 whitespace-nowrap rounded-xl bg-[#1d1d1f] px-3 py-1.5 text-xs font-medium text-white shadow-xl shadow-black/15">
+              <div className="absolute -top-1 right-6 h-2 w-2 rotate-45 bg-[#1d1d1f]" />
               {activeNotice.text}
             </div>
           )}
         </div>
 
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex items-center md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl text-gray-600 hover:text-black hover:bg-gray-100 transition-colors focus:outline-none"
+            className="rounded-xl p-2 text-gray-600 transition-colors hover:bg-white/60 hover:text-black focus:outline-none"
             aria-label="Открыть меню"
           >
             {mobileMenuOpen ? (
               <svg
-                className="w-6 h-6"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -259,7 +255,7 @@ export default function Navbar() {
               </svg>
             ) : (
               <svg
-                className="w-6 h-6"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -277,16 +273,16 @@ export default function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-200 px-5 pt-3 pb-6 space-y-4 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="relative space-y-4 border-b border-white/80 bg-white/70 px-5 pb-6 pt-3 shadow-lg shadow-black/[0.05] backdrop-blur-2xl md:hidden">
           <div className="space-y-1">
             <button
               onClick={() => setToolsOpen(!toolsOpen)}
-              className="w-full flex items-center justify-between py-2 text-base font-medium text-gray-900 focus:outline-none"
+              className="flex w-full items-center justify-between py-2 text-base font-medium text-gray-900 focus:outline-none"
             >
               <span>Инструменты</span>
 
               <svg
-                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+                className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${
                   toolsOpen ? "rotate-180" : ""
                 }`}
                 fill="none"
@@ -303,158 +299,107 @@ export default function Navbar() {
             </button>
 
             {toolsOpen && (
-              <div className="pl-3 py-1 space-y-1 border-l-2 border-gray-100 ml-1">
+              <div className="ml-1 space-y-1 border-l-2 border-black/[0.06] py-1 pl-3">
                 <Link
                   href="/counter"
                   onClick={closeMenu}
                   className="block py-2 text-sm text-gray-700 hover:text-blue-600"
                 >
-                  <div className="font-medium">
-                    Подсчет символов
-                  </div>
-
-                  <div className="text-xs text-gray-400">
+                  <div className="font-medium">Подсчет символов</div>
+                  <div className="text-xs text-gray-500">
                     Лимиты под Title и Description
                   </div>
                 </Link>
 
-                <div>
-                  <button
-                    onClick={(e) =>
-                      triggerNotice(
-                        e,
-                        "m-utm",
-                        "Генератора UTM пока нет, но скоро появится! 🛠️"
-                      )
-                    }
-                    className="w-full text-left py-2 text-sm text-gray-700 hover:text-blue-600 focus:outline-none"
-                  >
-                    <div className="font-medium flex items-center justify-between pr-2">
-                      <span>Генератор UTM</span>
+                <button
+                  onClick={(e) =>
+                    triggerNotice(
+                      e,
+                      "m-utm",
+                      "Генератора UTM пока нет, но скоро появится! 🛠️"
+                    )
+                  }
+                  className="w-full py-2 text-left text-sm text-gray-700 hover:text-blue-600"
+                >
+                  <div className="font-medium">Генератор UTM</div>
+                  <div className="text-xs text-gray-500">
+                    Разметка ссылок без ошибок
+                  </div>
+                </button>
 
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 font-medium">
-                        скоро
-                      </span>
-                    </div>
-
-                    <div className="text-xs text-gray-400">
-                      Разметка ссылок без ошибок
-                    </div>
-                  </button>
-
-                  {activeNotice?.id === "m-utm" && (
-                    <div className="mt-1 p-2 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-md animate-in fade-in duration-200">
-                      {activeNotice.text}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <button
-                    onClick={(e) =>
-                      triggerNotice(
-                        e,
-                        "m-meta",
-                        "Выгрузка meta в разработке, скоро откроем! 🔍"
-                      )
-                    }
-                    className="w-full text-left py-2 text-sm text-gray-700 hover:text-blue-600 focus:outline-none"
-                  >
-                    <div className="font-medium flex items-center justify-between pr-2">
-                      <span>Выгрузка meta</span>
-
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 font-medium">
-                        скоро
-                      </span>
-                    </div>
-
-                    <div className="text-xs text-gray-400">
-                      Парсинг тегов по списку URL
-                    </div>
-                  </button>
-
-                  {activeNotice?.id === "m-meta" && (
-                    <div className="mt-1 p-2 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-md animate-in fade-in duration-200">
-                      {activeNotice.text}
-                    </div>
-                  )}
-                </div>
+                <button
+                  onClick={(e) =>
+                    triggerNotice(
+                      e,
+                      "m-meta",
+                      "Выгрузка meta в разработке, скоро откроем! 🔍"
+                    )
+                  }
+                  className="w-full py-2 text-left text-sm text-gray-700 hover:text-blue-600"
+                >
+                  <div className="font-medium">Выгрузка meta</div>
+                  <div className="text-xs text-gray-500">
+                    Парсинг тегов по списку URL
+                  </div>
+                </button>
               </div>
             )}
           </div>
 
-          <div className="border-t border-gray-100 pt-3 space-y-2.5">
+          <div className="space-y-2.5 border-t border-black/[0.06] pt-3">
             <Link
               href="/pricing"
               onClick={closeMenu}
-              className="block text-base font-medium text-gray-800 hover:text-blue-600"
+              className="block text-base font-medium text-gray-800"
             >
               Тарифы
             </Link>
 
-            <div>
-              <button
-                onClick={(e) =>
-                  triggerNotice(
-                    e,
-                    "m-contacts",
-                    "Контактов пока нет, но скоро появятся! 📬"
-                  )
-                }
-                className="w-full text-left text-base font-medium text-gray-800 hover:text-blue-600 focus:outline-none"
-              >
-                Контакты
-              </button>
-
-              {activeNotice?.id === "m-contacts" && (
-                <div className="mt-1.5 p-2.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-md animate-in fade-in duration-200">
-                  {activeNotice.text}
-                </div>
-              )}
-            </div>
-
-            <div>
-              <button
-                onClick={(e) =>
-                  triggerNotice(
-                    e,
-                    "m-blog",
-                    "Блога пока нет, но скоро появится! 📝"
-                  )
-                }
-                className="w-full text-left text-base font-medium text-gray-800 hover:text-blue-600 focus:outline-none"
-              >
-                Блог
-              </button>
-
-              {activeNotice?.id === "m-blog" && (
-                <div className="mt-1.5 p-2.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-md animate-in fade-in duration-200">
-                  {activeNotice.text}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="pt-2">
             <button
               onClick={(e) =>
                 triggerNotice(
                   e,
-                  "m-cabinet",
-                  "Личный кабинет пока в разработке! 🔑"
+                  "m-contacts",
+                  "Контактов пока нет, но скоро появятся! 📬"
                 )
               }
-              className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium flex items-center justify-center transition-colors focus:outline-none"
+              className="block text-base font-medium text-gray-800"
             >
-              Личный кабинет
+              Контакты
             </button>
 
-            {activeNotice?.id === "m-cabinet" && (
-              <div className="mt-2 p-2.5 text-center rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-md animate-in fade-in duration-200">
-                {activeNotice.text}
-              </div>
-            )}
+            <button
+              onClick={(e) =>
+                triggerNotice(
+                  e,
+                  "m-blog",
+                  "Блога пока нет, но скоро появится! 📝"
+                )
+              }
+              className="block text-base font-medium text-gray-800"
+            >
+              Блог
+            </button>
           </div>
+
+          <button
+            onClick={(e) =>
+              triggerNotice(
+                e,
+                "m-cabinet",
+                "Личный кабинет пока в разработке! 🔑"
+              )
+            }
+            className="w-full rounded-xl border border-white/80 bg-white/55 py-2.5 text-sm font-medium text-gray-900"
+          >
+            Личный кабинет
+          </button>
+
+          {activeNotice?.id.startsWith("m-") && (
+            <div className="rounded-xl bg-[#1d1d1f] p-2.5 text-center text-xs font-medium text-white">
+              {activeNotice.text}
+            </div>
+          )}
         </div>
       )}
     </header>

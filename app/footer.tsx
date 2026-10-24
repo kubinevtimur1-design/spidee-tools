@@ -1,164 +1,40 @@
-"use client";
-
-import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 export default function Footer() {
-  const [activeNotice, setActiveNotice] = useState<{
-    id: string;
-    text: string;
-  } | null>(null);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const triggerNotice = (
-    e: React.MouseEvent,
-    id: string,
-    text: string
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    setActiveNotice({ id, text });
-
-    timerRef.current = setTimeout(() => {
-      setActiveNotice(null);
-    }, 2500);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
   return (
-    <footer className="border-t border-gray-200/70 bg-white/50 backdrop-blur-sm pt-8 pb-14 sm:py-10 mt-auto text-xs text-gray-500">
-      <div className="max-w-5xl mx-auto px-5 sm:px-6 space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-5 sm:gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-base leading-none">🕷️</span>
+    <footer className="relative z-40 mt-auto">
+      <div className="absolute inset-0 border-t border-white/90 bg-white/65 shadow-[0_-1px_18px_rgba(0,0,0,0.025)] backdrop-blur-[28px] backdrop-saturate-150" />
 
-              <span className="font-semibold text-gray-900 text-sm tracking-tight">
-                Spidy Tools
-              </span>
-            </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/90" />
 
-            <p className="text-xs text-gray-400">
-              Набор инструментов для практической работы
-            </p>
-          </div>
+      <div className="relative mx-auto flex max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-sm font-semibold tracking-tight text-gray-900"
+        >
+          <span className="text-sm leading-none">🕷️</span>
+          <span>Spidy Tools</span>
+        </Link>
 
-          <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-gray-600">
-            <Link
-              href="/counter"
-              className="hover:text-black transition-colors"
-            >
-              Счетчик символов
-            </Link>
+        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500">
+          <Link
+            href="/counter"
+            className="transition-colors hover:text-gray-900"
+          >
+            Инструменты
+          </Link>
 
-            <div className="relative inline-flex items-center">
-              <button
-                onClick={(e) =>
-                  triggerNotice(
-                    e,
-                    "f-utm",
-                    "Генератора UTM пока нет, но скоро появится! 🛠️"
-                  )
-                }
-                className="hover:text-black transition-colors focus:outline-none"
-              >
-                Генератор UTM
-              </button>
+          <Link
+            href="/pricing"
+            className="transition-colors hover:text-gray-900"
+          >
+            Тарифы
+          </Link>
 
-              {activeNotice?.id === "f-utm" && (
-                <div className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-200 pointer-events-none">
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
-                  {activeNotice.text}
-                </div>
-              )}
-            </div>
-
-            <div className="relative inline-flex items-center">
-              <button
-                onClick={(e) =>
-                  triggerNotice(
-                    e,
-                    "f-meta",
-                    "Выгрузка meta в разработке, скоро откроем! 🔍"
-                  )
-                }
-                className="hover:text-black transition-colors focus:outline-none"
-              >
-                Выгрузка meta
-              </button>
-
-              {activeNotice?.id === "f-meta" && (
-                <div className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-200 pointer-events-none">
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
-                  {activeNotice.text}
-                </div>
-              )}
-            </div>
-          </nav>
-        </div>
-
-        <div className="border-t border-gray-100 pt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-gray-400">
-          <p className="text-[11px] sm:text-xs text-gray-400">
-            © 2026 Spidy Tools. Все права защищены.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] sm:text-xs">
-            <div className="relative inline-flex items-center">
-              <button
-                onClick={(e) =>
-                  triggerNotice(
-                    e,
-                    "f-privacy",
-                    "Политика конфиденциальности появится к запуску! 📄"
-                  )
-                }
-                className="hover:text-gray-600 hover:underline transition-colors focus:outline-none"
-              >
-                Политика конфиденциальности
-              </button>
-
-              {activeNotice?.id === "f-privacy" && (
-                <div className="absolute bottom-full mb-2.5 left-0 sm:left-1/2 sm:-translate-x-1/2 z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-200 pointer-events-none">
-                  <div className="absolute -bottom-1 left-6 sm:left-1/2 sm:-translate-x-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
-                  {activeNotice.text}
-                </div>
-              )}
-            </div>
-
-            <div className="relative inline-flex items-center">
-              <button
-                onClick={(e) =>
-                  triggerNotice(
-                    e,
-                    "f-terms",
-                    "Пользовательское соглашение пока в разработке! 📑"
-                  )
-                }
-                className="hover:text-gray-600 hover:underline transition-colors focus:outline-none"
-              >
-                Пользовательское соглашение
-              </button>
-
-              {activeNotice?.id === "f-terms" && (
-                <div className="absolute bottom-full mb-2.5 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:right-auto z-50 whitespace-nowrap px-3 py-1.5 rounded-xl bg-[#1d1d1f] text-white text-xs font-medium shadow-xl shadow-black/15 animate-in fade-in zoom-in-95 slide-in-from-bottom-1 duration-200 pointer-events-none">
-                  <div className="absolute -bottom-1 right-6 sm:left-1/2 sm:-translate-x-1/2 w-2 h-2 bg-[#1d1d1f] rotate-45" />
-                  {activeNotice.text}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+          <span className="text-gray-400">
+            © {new Date().getFullYear()} Spidy Tools
+          </span>
+        </nav>
       </div>
     </footer>
   );
