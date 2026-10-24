@@ -58,3 +58,62 @@ body {
 .animate-pulse-slow {
   animation: slowPulse 6s ease-in-out infinite;
 }
+
+/* Navbar wordmark only. Resting state stays solid black; the gradient
+   paints on hover or keyboard focus. Pointer position shifts the stops. */
+.navbar-logo {
+  --logo-x: 50%;
+  --logo-y: 42%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .navbar-logo-word {
+    color: #000;
+    -webkit-text-fill-color: #000;
+    background-image: linear-gradient(
+      108deg,
+      #1e3a8a 0%,
+      #2563eb 34%,
+      #7dd3fc 52%,
+      #4f46e5 70%,
+      #1d4ed8 100%
+    );
+    background-size: 220% 220%;
+    background-position: var(--logo-x) var(--logo-y);
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition:
+      background-position 0.55s ease,
+      -webkit-text-fill-color 0.4s ease,
+      color 0.4s ease;
+  }
+
+  .navbar-logo:hover .navbar-logo-word,
+  .navbar-logo:focus-visible .navbar-logo-word {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .navbar-logo.is-mixing .navbar-logo-word {
+    transition:
+      background-position 0.16s ease-out,
+      -webkit-text-fill-color 0.22s ease,
+      color 0.22s ease;
+  }
+
+  .navbar-logo-emoji {
+    transition: filter 0.4s ease;
+  }
+
+  .navbar-logo:hover .navbar-logo-emoji,
+  .navbar-logo:focus-visible .navbar-logo-emoji {
+    filter: drop-shadow(0 0 5px rgba(37, 99, 235, 0.5));
+  }
+
+  .navbar-logo:focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.85);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
