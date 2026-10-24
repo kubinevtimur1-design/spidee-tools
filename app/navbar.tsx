@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import NavbarLogo from "./navbar-logo";
 
 const tools = [
   {
@@ -32,14 +33,7 @@ export default function Navbar() {
 
       <div className="relative mx-auto flex h-14 max-w-5xl items-center gap-3 px-4 sm:px-6">
         <div className="flex min-w-0 flex-1">
-          <Link
-            href="/"
-            onClick={closeMenu}
-            className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-black"
-          >
-            <span className="text-base leading-none">🕷️</span>
-            <span>Spidy Tools</span>
-          </Link>
+          <NavbarLogo onClick={closeMenu} />
         </div>
 
         <nav className="hidden shrink-0 items-center gap-1 text-sm text-gray-600 md:flex">
