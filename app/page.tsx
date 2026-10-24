@@ -2,20 +2,24 @@ import type { Metadata } from "next";
 import HeroTitle from "./hero-title";
 import HeroSlime from "./hero-slime";
 import HeroToolsButton from "./hero-tools-button";
+import { pageMetadata } from "./seo";
 
 export const metadata: Metadata = {
-  title: "Полезные инструменты для маркетолога — Spidy Tools",
-  description:
-    "Простой и быстрый сервис для ежедневной рутины маркетолога: онлайн-подсчет длины сниппетов, генерация ссылок с UTM и парсер тегов.",
+  ...pageMetadata({
+    title: "Инструменты для SEO и маркетолога онлайн — Spidy Tools",
+    description:
+      "Бесплатные онлайн-инструменты для рутины SEO и маркетинга: подсчёт символов Title и Description, генератор UTM-меток. Без регистрации.",
+    path: "/",
+    ogTitle: "Spidy Tools — инструменты для SEO и маркетолога",
+    ogDescription:
+      "Подсчёт символов и генератор UTM в один клик. Бесплатно, без регистрации.",
+  }),
   keywords: [
     "seo сервис",
     "инструменты маркетолога",
     "генератор utm",
     "проверка title description",
   ],
-  alternates: {
-    canonical: "/",
-  },
 };
 
 export default function HomePage() {

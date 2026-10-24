@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import TowerGame from "./tower-game";
+import { pageMetadata } from "../seo";
 
-export const metadata: Metadata = {
-  title: "Spidee Tower — Построй свой небоскреб",
-  description: "Классическая таймкиллер-игра в духе кнопочных телефонов: строй этажи, удерживай баланс и ставь рекорды.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Spidee Tower — построй небоскрёб | Spidy Tools",
+  description:
+    "Мини-игра Spidee Tower: строй этажи, удерживай баланс и ставь рекорды. Пока мы развиваем сервисы.",
+  path: "/game/",
+  ogTitle: "Spidee Tower — построй небоскрёб",
+  ogDescription: "Таймкиллер: строй этажи и ставь рекорды.",
+});
 
 export default function GamePage() {
   return (

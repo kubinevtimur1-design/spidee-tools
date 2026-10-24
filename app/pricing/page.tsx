@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata } from "../seo";
 
-export const metadata: Metadata = {
-  title: "Тарифы — Spidy Tools",
+export const metadata: Metadata = pageMetadata({
+  title: "Тарифы Spidy Tools — пока бесплатно",
   description:
-    "Прозрачные условия Spidy Tools: пока что бесплатно для всех пользователей.",
-  alternates: { canonical: "/pricing" },
-};
+    "Условия Spidy Tools: все текущие инструменты бесплатно, без подписок и привязки карты.",
+  path: "/pricing/",
+  ogTitle: "Тарифы Spidy Tools",
+  ogDescription: "Сейчас бесплатно для всех. Без скрытых списаний.",
+});
 
 export default function PricingPage() {
   const pricingJsonLd = {
@@ -82,39 +85,47 @@ export default function PricingPage() {
             </span>
 
             <ul className="space-y-3 text-sm">
-              <li className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/25 text-xs font-semibold text-gray-800">
-                    ✓
-                  </div>
-
-                  <span className="font-medium text-gray-900">
-                    Подсчет символов
-                  </span>
-                </div>
-
-                <span className="text-xs font-medium text-gray-600">
-                  Работает
-                </span>
-              </li>
-
               {[
-                "Генератор UTM",
-                "Выгрузка meta",
-                "Личный кабинет для комфортной работы",
+                { name: "Подсчёт символов", ready: true },
+                { name: "Генератор UTM", ready: true },
+                { name: "Выгрузка meta", ready: false },
+                {
+                  name: "Личный кабинет для комфортной работы",
+                  ready: false,
+                },
               ].map((item) => (
-                <li key={item} className="flex items-center justify-between">
+                <li key={item.name} className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs text-gray-500">
-                      •
+                    <div
+                      className={`flex h-5 w-5 items-center justify-center rounded-full text-xs ${
+                        item.ready
+                          ? "bg-white/25 font-semibold text-gray-800"
+                          : "bg-white/20 text-gray-500"
+                      }`}
+                    >
+                      {item.ready ? "✓" : "•"}
                     </div>
 
-                    <span className="text-gray-700">{item}</span>
+                    <span
+                      className={
+                        item.ready
+                          ? "font-medium text-gray-900"
+                          : "text-gray-700"
+                      }
+                    >
+                      {item.name}
+                    </span>
                   </div>
 
-                  <span className="rounded-md bg-white/20 px-2 py-0.5 text-xs font-medium text-gray-600">
-                    скоро
-                  </span>
+                  {item.ready ? (
+                    <span className="text-xs font-medium text-gray-600">
+                      Работает
+                    </span>
+                  ) : (
+                    <span className="rounded-md bg-white/20 px-2 py-0.5 text-xs font-medium text-gray-600">
+                      скоро
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -122,7 +133,7 @@ export default function PricingPage() {
 
           <div className="pt-2">
             <Link
-              href="/counter"
+              href="/counter/"
               className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1d1d1f] px-4 py-3 text-sm font-medium text-white transition-all hover:bg-black"
             >
               Перейти к инструментам <span>→</span>
