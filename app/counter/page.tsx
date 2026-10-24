@@ -3,18 +3,31 @@ import Link from "next/link";
 import CounterTool from "./counter-tool";
 import { pageMetadata } from "../seo";
 
+const CANONICAL = "https://www.spidytools.ru/counter/";
+const PAGE_TITLE = "Подсчёт символов и превью Title/Description — Spidy Tools";
+const PAGE_DESCRIPTION =
+  "Считайте символы для Title и Description и сразу смотрите, как сниппет обрежется в Google и Яндексе. Без регистрации.";
+
+const sharedMetadata = pageMetadata({
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  path: "/counter/",
+  ogTitle: PAGE_TITLE,
+  ogDescription: PAGE_DESCRIPTION,
+});
+
 export const metadata: Metadata = {
-  ...pageMetadata({
-    title:
-      "Подсчёт символов онлайн — лимиты Title и Description | Spidy Tools",
-    description:
-      "Бесплатный счётчик символов для SEO: лимиты сниппетов Google и Яндекс, символы с пробелами и без, слова и строки. Без регистрации.",
-    path: "/counter/",
-    ogTitle: "Подсчёт символов онлайн — Title и Description",
-    ogDescription: "Лимиты сниппетов Google и Яндекс в реальном времени.",
-  }),
+  ...sharedMetadata,
+  alternates: {
+    canonical: CANONICAL,
+  },
+  openGraph: {
+    ...sharedMetadata.openGraph,
+    url: CANONICAL,
+  },
   keywords: [
     "подсчет символов",
+    "превью сниппета",
     "длина title",
     "длина meta description",
     "калькулятор символов онлайн",
@@ -46,16 +59,17 @@ export default function CounterPage() {
           {
             "@type": "ListItem",
             position: 3,
-            name: "Подсчет символов",
-            item: "https://spidytools.ru/counter",
+            name: "Подсчёт символов и превью сниппета",
+            item: CANONICAL,
           },
         ],
       },
 
       {
         "@type": "WebApplication",
-        name: "Подсчет символов онлайн — Spidy Tools",
-        url: "https://spidytools.ru/counter",
+        name: "Подсчёт символов и превью сниппета",
+        description: PAGE_DESCRIPTION,
+        url: CANONICAL,
         applicationCategory: "BusinessApplication",
         operatingSystem: "All",
         browserRequirements: "Requires JavaScript",
@@ -97,17 +111,16 @@ export default function CounterPage() {
           <span>/</span>
 
           <span className="text-gray-900 font-medium">
-            Подсчет символов
+            Подсчёт символов
           </span>
         </nav>
 
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1f]">
-          Подсчет символов онлайн
+          Подсчёт символов и превью сниппета
         </h1>
 
         <p className="text-sm sm:text-base text-gray-500 max-w-2xl">
-          Проверяйте длину текста под лимиты сниппетов поисковых
-          систем Google и Яндекс в реальном времени.
+          Пиши title или description — сразу видно, влезет ли в Google и Яндекс.
         </p>
       </header>
 
