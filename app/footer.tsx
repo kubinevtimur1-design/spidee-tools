@@ -24,6 +24,13 @@ export default function Footer() {
           </Link>
 
           <Link
+            href="/slug/"
+            className="transition-colors hover:text-gray-900"
+          >
+            Транслит и ЧПУ
+          </Link>
+
+          <Link
             href="/utm-generator/"
             className="transition-colors hover:text-gray-900"
           >

@@ -13,6 +13,7 @@ const OG_IMAGE = {
 export type LivePath =
   | "/"
   | "/counter/"
+  | "/slug/"
   | "/utm-generator/"
   | "/pricing/"
   | "/game/";

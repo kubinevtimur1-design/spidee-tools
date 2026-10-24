@@ -11,6 +11,11 @@ const tools = [
     description: "Лимиты Title и Description",
   },
   {
+    href: "/slug/",
+    title: "Транслит и ЧПУ",
+    description: "Чистый URL из заголовка",
+  },
+  {
     href: "/utm-generator/",
     title: "Генератор UTM",
     description: "Разметка ссылок для рекламы",

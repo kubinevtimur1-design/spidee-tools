@@ -18,6 +18,12 @@ const pages: MetadataRoute.Sitemap = [
     priority: 0.9,
   },
   {
+    url: "https://spidytools.ru/slug/",
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
     url: "https://spidytools.ru/utm-generator/",
     lastModified,
     changeFrequency: "weekly",

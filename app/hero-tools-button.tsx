@@ -5,6 +5,7 @@ import Link from "next/link";
 
 const tools = [
   { href: "/counter/", label: "Подсчёт символов" },
+  { href: "/slug/", label: "Транслит и ЧПУ" },
   { href: "/utm-generator/", label: "Генератор UTM" },
 ] as const;
 
@@ -54,15 +55,23 @@ export default function HeroToolsButton() {
       </button>
 
       {open && (
-        <div className="absolute left-1/2 top-full z-50 mt-3 -translate-x-1/2">
-          <div className="flex items-center whitespace-nowrap rounded-2xl border border-gray-200/80 bg-white/95 p-1.5 shadow-lg shadow-black/[0.06] backdrop-blur-xl">
+        <div className="absolute left-1/2 top-full z-50 mt-3 w-[min(16rem,calc(100vw-2rem))] -translate-x-1/2 sm:w-max">
+          <div className="flex flex-col rounded-2xl border border-gray-200/80 bg-white/95 p-1.5 shadow-lg shadow-black/[0.06] backdrop-blur-xl sm:flex-row sm:items-center">
             {tools.map((tool, index) => (
-              <span key={tool.href} className="flex items-center">
-                {index > 0 && <span className="mx-1 h-4 w-px bg-gray-200" />}
+              <span
+                key={tool.href}
+                className="flex flex-col sm:flex-row sm:items-center"
+              >
+                {index > 0 && (
+                  <span
+                    className="mx-1 hidden h-4 w-px bg-gray-200 sm:block"
+                    aria-hidden="true"
+                  />
+                )}
                 <Link
                   href={tool.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-xl px-3 py-2 text-xs font-medium text-gray-800 transition-colors hover:bg-gray-100"
+                  className="rounded-xl px-3 py-2 text-xs font-medium text-gray-800 transition-colors hover:bg-gray-100 motion-reduce:transition-none"
                 >
                   {tool.label}
                 </Link>

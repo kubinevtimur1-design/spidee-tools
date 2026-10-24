@@ -87,6 +87,7 @@ export default function PricingPage() {
             <ul className="space-y-3 text-sm">
               {[
                 { name: "Подсчёт символов", ready: true },
+                { name: "Транслит и ЧПУ", ready: true },
                 { name: "Генератор UTM", ready: true },
                 { name: "Выгрузка meta", ready: false },
                 {

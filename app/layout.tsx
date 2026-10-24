@@ -20,11 +20,12 @@ export const metadata: Metadata = {
     template: "%s | Spidy Tools",
   },
   description:
-    "Бесплатные онлайн-инструменты для рутины SEO и маркетинга: подсчёт символов Title и Description, генератор UTM-меток. Без регистрации.",
+    "Бесплатные онлайн-инструменты для рутины SEO и маркетинга: подсчёт символов Title и Description, транслит в ЧПУ, генератор UTM-меток. Без регистрации.",
   keywords: [
     "SEO инструменты",
     "подсчёт символов онлайн",
     "генератор UTM",
+    "транслит в ЧПУ",
     "лимиты title description",
     "инструменты маркетолога",
   ],
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
     siteName: "Spidy Tools",
     title: { absolute: "Spidy Tools — инструменты для SEO и маркетолога" },
     description:
-      "Подсчёт символов и генератор UTM в один клик. Бесплатно, без регистрации.",
+      "Подсчёт символов, транслит в ЧПУ и генератор UTM в один клик. Бесплатно, без регистрации.",
     url: "https://spidytools.ru/",
     images: [
       {
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: { absolute: "Spidy Tools — инструменты для SEO и маркетолога" },
     description:
-      "Подсчёт символов и генератор UTM в один клик. Бесплатно, без регистрации.",
+      "Подсчёт символов, транслит в ЧПУ и генератор UTM в один клик. Бесплатно, без регистрации.",
     images: ["/hero-glass.webp"],
   },
 };
