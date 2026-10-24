@@ -18,7 +18,7 @@ const tools = [
   {
     href: "/utm-generator/",
     title: "Генератор UTM",
-    description: "Разметка ссылок для рекламы",
+    description: "UTM-ссылка и QR-код",
   },
 ] as const;
 
