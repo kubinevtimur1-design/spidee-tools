@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CounterTool from "./counter-tool";
+import { pageMetadata } from "../seo";
 
 export const metadata: Metadata = {
-  title: "Подсчет символов онлайн — лимиты Title и Description",
-
-  description:
-    "Бесплатный инструмент Spidy Tools для SEO-специалистов: точный подсчет символов с пробелами и без, слов, строк и контроль лимита сниппетов Google и Яндекс.",
-
+  ...pageMetadata({
+    title:
+      "Подсчёт символов онлайн — лимиты Title и Description | Spidy Tools",
+    description:
+      "Бесплатный счётчик символов для SEO: лимиты сниппетов Google и Яндекс, символы с пробелами и без, слова и строки. Без регистрации.",
+    path: "/counter/",
+    ogTitle: "Подсчёт символов онлайн — Title и Description",
+    ogDescription: "Лимиты сниппетов Google и Яндекс в реальном времени.",
+  }),
   keywords: [
     "подсчет символов",
     "длина title",
@@ -15,10 +20,6 @@ export const metadata: Metadata = {
     "калькулятор символов онлайн",
     "лимит сниппета яндекс",
   ],
-
-  alternates: {
-    canonical: "/counter",
-  },
 };
 
 export default function CounterPage() {

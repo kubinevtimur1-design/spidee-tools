@@ -17,21 +17,21 @@ export default function Footer() {
 
         <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-gray-500">
           <Link
-            href="/counter"
+            href="/counter/"
             className="transition-colors hover:text-gray-900"
           >
-            Подсчет символов
+            Подсчёт символов
           </Link>
 
           <Link
-            href="/utm-generator"
+            href="/utm-generator/"
             className="transition-colors hover:text-gray-900"
           >
             Генератор UTM
           </Link>
 
           <Link
-            href="/pricing"
+            href="/pricing/"
             className="transition-colors hover:text-gray-900"
           >
             Тарифы

@@ -16,16 +16,15 @@ export const metadata: Metadata = {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕷️</text></svg>",
   },
   title: {
-    default: "🕷️ Spidy Tools — полезные инструменты для маркетолога",
-    template: "%s | 🕷️ Spidy Tools",
+    default: "Инструменты для SEO и маркетолога онлайн — Spidy Tools",
+    template: "%s | Spidy Tools",
   },
   description:
-    "Минималистичный набор онлайн-инструментов для специалистов по продвижению: подсчет символов, генератор UTM и парсер тегов без перегруженных дашбордов.",
+    "Бесплатные онлайн-инструменты для рутины SEO и маркетинга: подсчёт символов Title и Description, генератор UTM-меток. Без регистрации.",
   keywords: [
     "SEO инструменты",
-    "подсчет символов онлайн",
+    "подсчёт символов онлайн",
     "генератор UTM",
-    "выгрузка мета тегов",
     "лимиты title description",
     "инструменты маркетолога",
   ],
@@ -34,14 +33,33 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: {
+    canonical: "https://spidytools.ru/",
+  },
   openGraph: {
     type: "website",
     locale: "ru_RU",
     siteName: "Spidy Tools",
-    title: "🕷️ Spidy Tools — полезные инструменты для маркетолога",
+    title: { absolute: "Spidy Tools — инструменты для SEO и маркетолога" },
     description:
-      "Быстрые инструменты для ежедневной рутины маркетолога в один клик.",
-    url: "https://spidytools.ru",
+      "Подсчёт символов и генератор UTM в один клик. Бесплатно, без регистрации.",
+    url: "https://spidytools.ru/",
+    images: [
+      {
+        url: "/hero-glass.webp",
+        width: 2048,
+        height: 2048,
+        alt: "Spidy Tools",
+        type: "image/webp",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: { absolute: "Spidy Tools — инструменты для SEO и маркетолога" },
+    description:
+      "Подсчёт символов и генератор UTM в один клик. Бесплатно, без регистрации.",
+    images: ["/hero-glass.webp"],
   },
 };
 
