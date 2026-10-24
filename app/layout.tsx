@@ -80,6 +80,9 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-screen bg-[#fbfbfd] text-[#1d1d1f] flex flex-col selection:bg-blue-500 selection:text-white`}
       >
+        {/* Плавающая плашка с мини-игрой */}
+        <GameBanner />
+        
         {/* Адаптивная навигация с подсказками */}
         <Navbar />
 
@@ -89,8 +92,6 @@ export default function RootLayout({
         {/* Интерактивный подвал с подсказками */}
         <Footer />
 
-        {/* Плавающая плашка с мини-игрой */}
-        <GameBanner />
       </body>
     </html>
   );

@@ -25,3 +25,24 @@ body {
 .animate-morph {
   animation: morph 9s ease-in-out infinite;
 }
+@keyframes darkShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-dark-shimmer {
+  background: linear-gradient(
+    90deg,
+    #121214 0%,
+    #1c1c21 25%,
+    #2e2e36 50%,
+    #1c1c21 75%,
+    #121214 100%
+  );
+  background-size: 200% 100%;
+  animation: darkShimmer 6s linear infinite;
+}
