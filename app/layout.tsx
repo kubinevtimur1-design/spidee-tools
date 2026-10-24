@@ -11,13 +11,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://spidee.ru"),
+  metadataBase: new URL("https://spaidy.ru"),
   icons: {
     icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕷️</text></svg>",
   },
   title: {
-    default: "🕷️ Spidee — полезные инструменты для SEO-маркетолога",
-    template: "%s | 🕷️ Spidee",
+    default: "🕷️ Spaidy — полезные инструменты для SEO-маркетолога",
+    template: "%s | 🕷️ Spaidy",
   },
   description:
     "Минималистичный набор онлайн-инструментов для специалистов по продвижению: подсчет символов, генератор UTM и парсер тегов без перегруженных дашбордов.",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     "лимиты title description",
     "инструменты маркетолога",
   ],
-  authors: [{ name: "Spidee Team" }],
+  authors: [{ name: "Spaidy Team" }],
   robots: {
     index: true,
     follow: true,
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    siteName: "🕷️ Spidee",
-    title: "🕷️ Spidee — полезные инструменты для SEO-маркетолога",
+    siteName: "🕷️ Spaidy",
+    title: "🕷️ Spaidy — полезные инструменты для SEO-маркетолога",
     description: "Быстрые инструменты для ежедневной SEO-рутины в один клик.",
   },
 };
@@ -53,17 +53,17 @@ export default function RootLayout({
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://spidee.ru/#organization",
-        name: "🕷️ Spidee",
-        url: "https://spidee.ru",
+        "@id": "https://spaidy.ru/#organization",
+        name: "🕷️ Spaidy",
+        url: "https://spaidy.ru",
       },
       {
         "@type": "WebSite",
-        "@id": "https://spidee.ru/#website",
-        url: "https://spidee.ru",
-        name: "🕷️ Spidee SEO Toolbox",
+        "@id": "https://spaidy.ru/#website",
+        url: "https://spaidy.ru",
+          name: "🕷️ Spaidy SEO Toolbox",
         publisher: {
-          "@id": "https://spidee.ru/#organization",
+          "@id": "https://spaidy.ru/#organization",
         },
       },
     ],

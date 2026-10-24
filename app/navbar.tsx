@@ -51,7 +51,7 @@ export default function Navbar() {
           className="font-semibold text-lg tracking-tight text-black flex items-center gap-2"
         >
           <span className="text-base leading-none">🕷️</span>
-          <span>Spidee</span>
+          <span>Spaidy</span>
         </Link>
 
         {/* Десктопное меню */}

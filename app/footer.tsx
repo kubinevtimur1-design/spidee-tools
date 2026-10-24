@@ -37,7 +37,7 @@ export default function Footer() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-base leading-none">🕷️</span>
-              <span className="font-semibold text-gray-900 text-sm tracking-tight">Spidee</span>
+              <span className="font-semibold text-gray-900 text-sm tracking-tight">Spaidy</span>
             </div>
             <p className="text-xs text-gray-400">
               Набор инструментов для практической работы
@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Нижняя юридическая линия */}
         <div className="border-t border-gray-100 pt-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-gray-400">
           <p className="text-[11px] sm:text-xs text-gray-400">
-            © 2026 Spidee. Все права защищены.
+            © 2026 Spaidy. Все права защищены.
           </p>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] sm:text-xs">
