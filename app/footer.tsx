@@ -20,7 +20,14 @@ export default function Footer() {
             href="/counter"
             className="transition-colors hover:text-gray-900"
           >
-            Инструменты
+            Подсчет символов
+          </Link>
+
+          <Link
+            href="/utm-generator"
+            className="transition-colors hover:text-gray-900"
+          >
+            Генератор UTM
           </Link>
 
           <Link
@@ -30,9 +37,7 @@ export default function Footer() {
             Тарифы
           </Link>
 
-          <span className="text-gray-400">
-            © 2026 Spidy Tools
-          </span>
+          <span className="text-gray-400">© 2026 Spidy Tools</span>
         </nav>
       </div>
     </footer>

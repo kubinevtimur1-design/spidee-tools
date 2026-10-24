@@ -91,39 +91,17 @@ export default function Navbar() {
                   </span>
                 </Link>
 
-                <div className="relative">
-                  <button
-                    onClick={(e) =>
-                      triggerNotice(
-                        e,
-                        "tool-utm",
-                        "Генератора UTM пока нет, но скоро появится! 🛠️"
-                      )
-                    }
-                    className="flex w-full flex-col rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-white/70 focus:outline-none"
-                  >
-                    <div className="flex w-full items-center justify-between gap-2">
-                      <span className="text-[13px] font-medium text-gray-900">
-                        Генератор UTM
-                      </span>
-
-                      <span className="rounded-md bg-black/[0.04] px-1.5 py-0.5 text-[9px] font-medium text-gray-500">
-                        скоро
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] leading-4 text-gray-500">
-                      Разметка ссылок без ошибок
-                    </span>
-                  </button>
-
-                  {activeNotice?.id === "tool-utm" && (
-                    <div className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-lg bg-[#1d1d1f] px-2.5 py-1.5 text-[11px] font-medium text-white shadow-xl shadow-black/15">
-                      <div className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 bg-[#1d1d1f]" />
-                      {activeNotice.text}
-                    </div>
-                  )}
-                </div>
+                <Link
+                  href="/utm-generator"
+                  className="flex flex-col rounded-lg px-2.5 py-2 transition-colors hover:bg-white/70"
+                >
+                  <span className="text-[13px] font-medium text-gray-900">
+                    Генератор UTM
+                  </span>
+                  <span className="text-[11px] leading-4 text-gray-500">
+                    Разметка ссылок без ошибок
+                  </span>
+                </Link>
 
                 <div className="relative">
                   <button
@@ -162,7 +140,10 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Link href="/pricing" className="transition-colors hover:text-black">
+          <Link
+            href="/pricing"
+            className="transition-colors hover:text-black"
+          >
             Тарифы
           </Link>
 
@@ -311,21 +292,16 @@ export default function Navbar() {
                   </div>
                 </Link>
 
-                <button
-                  onClick={(e) =>
-                    triggerNotice(
-                      e,
-                      "m-utm",
-                      "Генератора UTM пока нет, но скоро появится! 🛠️"
-                    )
-                  }
-                  className="w-full py-2 text-left text-sm text-gray-700 hover:text-blue-600"
+                <Link
+                  href="/utm-generator"
+                  onClick={closeMenu}
+                  className="block py-2 text-sm text-gray-700 hover:text-blue-600"
                 >
                   <div className="font-medium">Генератор UTM</div>
                   <div className="text-xs text-gray-500">
                     Разметка ссылок без ошибок
                   </div>
-                </button>
+                </Link>
 
                 <button
                   onClick={(e) =>
