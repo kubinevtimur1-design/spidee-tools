@@ -152,14 +152,6 @@ function downloadSvg(svg: string) {
   );
 }
 
-function scrollToQr() {
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.getElementById("utm-qr")?.scrollIntoView({
-    behavior: reduce ? "auto" : "smooth",
-    block: "start",
-  });
-}
-
 export default function UtmTool() {
   const [url, setUrl] = useState("");
   const [utm, setUtm] = useState<UtmValues>(EMPTY_UTM);
@@ -305,16 +297,16 @@ export default function UtmTool() {
 
   return (
     <>
-      <main className="min-h-[80vh] bg-transparent px-4 pb-44 pt-10 sm:px-6 sm:pb-40 sm:pt-16">
+      <main className="min-h-[80vh] bg-transparent px-4 pb-80 pt-6 sm:px-6 sm:pb-64 sm:pt-12">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-10 text-center">
+          <div className="mb-6 text-center sm:mb-8">
             <h1 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-5xl">
               Генератор UTM-меток
             </h1>
 
             <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">
               Собери ссылку для рекламы — свои значения и макросы площадок.
-              QR появится сразу под адресом.
+              QR появится внизу, рядом со ссылкой.
             </p>
           </div>
 
@@ -359,16 +351,6 @@ export default function UtmTool() {
                 сразу.
               </p>
             </section>
-
-            {url.trim() && (
-              <QrPanel
-                ready={qrReady}
-                asset={qrFailed ? null : qrAsset}
-                pending={qrPending}
-                failed={qrFailed}
-                fresh={qrFresh}
-              />
-            )}
 
             <section className="rounded-2xl border border-white/80 bg-white/75 p-5 shadow-sm shadow-black/[0.03] backdrop-blur-xl sm:p-7">
               <div className="mb-5 flex items-center gap-3">
@@ -610,23 +592,15 @@ export default function UtmTool() {
 
       {url.trim() && (
         <div className="fixed inset-x-0 bottom-0 z-[60] px-3 pb-3 sm:px-6 sm:pb-5">
-          <div className="mx-auto max-w-3xl rounded-2xl border border-gray-200/80 bg-white/95 p-3 shadow-[0_-8px_40px_rgba(0,0,0,0.12)] backdrop-blur-2xl sm:p-4">
-            <div className="flex items-center justify-between gap-3">
+          <div className="mx-auto max-h-[min(24rem,calc(100dvh-7.5rem))] max-w-3xl overflow-y-auto rounded-2xl border border-gray-200/80 bg-white/95 p-3 shadow-[0_-8px_40px_rgba(0,0,0,0.12)] backdrop-blur-2xl sm:p-4">
+            <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <div className="mb-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <div className="mb-1 flex items-center gap-2">
                   <span className="h-2 w-2 shrink-0 rounded-full bg-green-500" />
                   <span className="text-xs font-semibold text-gray-700">
                     Твоя UTM-ссылка
                   </span>
-                  <button
-                    type="button"
-                    onClick={scrollToQr}
-                    className="text-[10px] font-medium text-gray-500 underline-offset-2 hover:text-gray-900 hover:underline"
-                  >
-                    К QR
-                  </button>
                 </div>
-
                 <div
                   title={result}
                   className="max-h-14 overflow-y-auto break-all font-mono text-[11px] leading-5 text-gray-600 sm:max-h-16 sm:text-xs"
@@ -639,7 +613,7 @@ export default function UtmTool() {
                 type="button"
                 onClick={copyResult}
                 disabled={!result}
-                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gray-900 px-3 py-3 text-xs font-medium text-white transition hover:bg-gray-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 motion-reduce:transform-none motion-reduce:transition-none sm:px-5 sm:text-sm"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gray-900 px-3 py-2.5 text-xs font-medium text-white transition hover:bg-gray-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 motion-reduce:transform-none motion-reduce:transition-none sm:px-4 sm:text-sm"
               >
                 {copied ? (
                   <>
@@ -673,6 +647,49 @@ export default function UtmTool() {
                 )}
               </button>
             </div>
+
+            <div
+              id="utm-qr"
+              aria-labelledby="utm-qr-title"
+              aria-busy={qrPending}
+              className="mt-3 flex items-center gap-3 border-t border-gray-100 pt-3"
+            >
+              <QrMark
+                ready={qrReady}
+                asset={qrFailed ? null : qrAsset}
+                fresh={qrFresh}
+              />
+              <div className="min-w-0">
+                <h2 id="utm-qr-title" className="text-sm font-semibold text-gray-900">
+                  QR-код
+                </h2>
+                <p className="mt-0.5 text-[11px] leading-4 text-gray-500">
+                  {!qrReady &&
+                    "Появится, когда ссылка начинается с http:// или https://."}
+                  {qrFailed && "Не вышло собрать — ссылка слишком длинная."}
+                  {qrFresh && "Для печати, офлайна или чата."}
+                  {qrReady && !qrFailed && !qrFresh && "Собираю QR…"}
+                </p>
+                {qrFresh && qrAsset && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void downloadPng(qrAsset.pngDataUrl)}
+                      className="min-h-11 rounded-lg bg-gray-900 px-3 text-sm font-medium text-white transition hover:bg-gray-800 motion-reduce:transition-none"
+                    >
+                      Скачать PNG
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => downloadSvg(qrAsset.svg)}
+                      className="min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 motion-reduce:transition-none"
+                    >
+                      Скачать SVG
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -680,83 +697,32 @@ export default function UtmTool() {
   );
 }
 
-function QrPanel({
+function QrMark({
   ready,
   asset,
-  pending,
-  failed,
   fresh,
 }: {
   ready: boolean;
   asset: QrAsset | null;
-  pending: boolean;
-  failed: boolean;
   fresh: boolean;
 }) {
+  if (!ready || !asset) return null;
+
   return (
-    <section
-      id="utm-qr"
-      aria-labelledby="utm-qr-title"
-      aria-busy={pending}
-      className="scroll-mt-28 scroll-mb-40 rounded-2xl border border-white/80 bg-white/75 p-5 shadow-sm shadow-black/[0.03] backdrop-blur-xl sm:p-7"
-    >
-      <h2 id="utm-qr-title" className="font-semibold text-gray-900">
-        QR-код
-      </h2>
-      <p className="mt-0.5 text-xs text-gray-500">
-        Для печати, офлайна или чата.
-      </p>
-
-      {!ready && (
-        <p className="mt-4 text-sm text-gray-500">
-          QR появится, когда ссылка начинается с http:// или https://.
-        </p>
-      )}
-
-      {ready && pending && (
-        <p className="mt-4 text-sm text-gray-500">Собираю QR…</p>
-      )}
-
-      {failed && (
-        <p className="mt-4 text-sm text-gray-500">
-          Не вышло собрать QR — ссылка слишком длинная.
-        </p>
-      )}
-
-      {asset && (
-        <div className="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          {/* Generated data URL — next/image does not apply. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={asset.pngDataUrl}
-            width={384}
-            height={384}
-            alt="QR-код сгенерированной ссылки"
-            className="h-44 w-44 shrink-0 rounded-xl border border-gray-200 bg-white sm:h-48 sm:w-48"
-          />
-
-          <div className="min-w-0">
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => void downloadPng(asset.pngDataUrl)}
-                disabled={!fresh}
-                className="min-h-11 rounded-lg bg-gray-900 px-3.5 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-wait disabled:bg-gray-300 motion-reduce:transition-none"
-              >
-                Скачать PNG
-              </button>
-              <button
-                type="button"
-                onClick={() => downloadSvg(asset.svg)}
-                disabled={!fresh}
-                className="min-h-11 rounded-lg border border-gray-200 bg-white px-3.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-wait disabled:text-gray-400 motion-reduce:transition-none"
-              >
-                Скачать SVG
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
+    <>
+      {/* Generated data URL — next/image does not apply. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={asset.pngDataUrl}
+        width={384}
+        height={384}
+        alt={
+          fresh
+            ? "QR-код сгенерированной ссылки"
+            : "QR-код обновляется"
+        }
+        className="h-32 w-32 shrink-0 rounded-xl border border-gray-200 bg-white sm:h-36 sm:w-36"
+      />
+    </>
   );
 }
