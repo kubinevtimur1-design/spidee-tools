@@ -17,66 +17,60 @@ export default function GameBanner() {
         .aurora-banner {
           position: relative;
           isolation: isolate;
-          background: #07142f;
-          border-bottom: 1px solid rgba(96, 165, 250, 0.25);
+          overflow: hidden;
+          background: #07142b;
+          border-bottom: 1px solid rgba(96, 165, 250, 0.22);
           color: white;
         }
 
         .aurora-glow {
           position: absolute;
           z-index: 0;
+          inset: -50% -10%;
           pointer-events: none;
-          left: -8%;
-          right: -8%;
-          top: -25px;
-          height: calc(100% + 85px);
-          border-radius: 50%;
-          filter: blur(32px);
-          will-change: transform, opacity;
           background:
             radial-gradient(
-              ellipse 35% 100% at 22% 25%,
-              rgba(0, 102, 255, 0.95) 0%,
-              rgba(0, 91, 255, 0.55) 38%,
-              transparent 100%
+              ellipse 28% 75% at 18% 50%,
+              rgba(0, 92, 255, 0.9) 0%,
+              rgba(0, 75, 255, 0.42) 42%,
+              transparent 75%
             ),
             radial-gradient(
-              ellipse 35% 110% at 55% 0%,
-              rgba(55, 145, 255, 0.95) 0%,
-              rgba(0, 100, 255, 0.5) 42%,
-              transparent 100%
+              ellipse 30% 85% at 52% 30%,
+              rgba(35, 125, 255, 0.85) 0%,
+              rgba(0, 92, 255, 0.35) 45%,
+              transparent 75%
             ),
             radial-gradient(
-              ellipse 30% 100% at 88% 25%,
-              rgba(0, 80, 255, 0.9) 0%,
-              rgba(36, 126, 255, 0.4) 45%,
-              transparent 100%
+              ellipse 26% 80% at 85% 55%,
+              rgba(0, 76, 255, 0.8) 0%,
+              rgba(35, 125, 255, 0.3) 45%,
+              transparent 75%
             );
-          animation: electricAurora 9s ease-in-out infinite alternate;
+          filter: blur(22px);
+          opacity: 0.95;
+          animation: auroraDrift 12s ease-in-out infinite alternate;
         }
 
         .aurora-ribbon {
           position: absolute;
           z-index: 0;
+          inset: 0;
           pointer-events: none;
-          left: -10%;
-          top: -15px;
-          width: 120%;
-          height: calc(100% + 55px);
           background: linear-gradient(
-            110deg,
-            transparent 10%,
-            rgba(0, 92, 255, 0.08) 24%,
-            rgba(49, 137, 255, 0.55) 38%,
-            rgba(190, 225, 255, 0.9) 43%,
-            rgba(38, 117, 255, 0.65) 48%,
-            rgba(0, 76, 255, 0.12) 65%,
-            transparent 82%
+            105deg,
+            transparent 15%,
+            rgba(30, 100, 255, 0.08) 30%,
+            rgba(70, 150, 255, 0.42) 43%,
+            rgba(190, 225, 255, 0.65) 47%,
+            rgba(45, 125, 255, 0.38) 52%,
+            rgba(0, 70, 255, 0.08) 68%,
+            transparent 85%
           );
-          filter: blur(24px);
-          opacity: 0.65;
-          transform: translateX(-25%) skewX(-12deg);
-          animation: electricFlow 8s ease-in-out infinite alternate;
+          background-size: 220% 100%;
+          filter: blur(18px);
+          opacity: 0.7;
+          animation: ribbonShift 10s ease-in-out infinite alternate;
         }
 
         .banner-content {
@@ -85,43 +79,41 @@ export default function GameBanner() {
         }
 
         .banner-link {
-          text-shadow: 0 1px 12px rgba(37, 99, 235, 0.45);
+          text-shadow: 0 1px 12px rgba(37, 99, 235, 0.4);
         }
 
         .banner-arrow {
           color: #93c5fd;
-          transition: transform 200ms ease;
+          transition: transform 200ms ease, color 200ms ease;
         }
 
         .banner-link:hover .banner-arrow {
           transform: translateX(3px);
+          color: #dbeafe;
         }
 
-        @keyframes electricAurora {
+        @keyframes auroraDrift {
           0% {
-            transform: translate3d(-3%, -4px, 0) scale(1, 0.95);
-            opacity: 0.75;
+            transform: translateX(-4%) scale(0.98);
           }
           50% {
-            transform: translate3d(2%, 7px, 0) scale(1.05, 1.08);
-            opacity: 1;
+            transform: translateX(3%) scale(1.04);
           }
           100% {
-            transform: translate3d(-1%, 2px, 0) scale(1.02, 1);
-            opacity: 0.85;
+            transform: translateX(-1%) scale(1.01);
           }
         }
 
-        @keyframes electricFlow {
+        @keyframes ribbonShift {
           0% {
-            transform: translateX(-35%) skewX(-12deg);
-            opacity: 0.3;
+            background-position: 100% 50%;
+            opacity: 0.35;
           }
           50% {
-            opacity: 0.85;
+            opacity: 0.8;
           }
           100% {
-            transform: translateX(35%) skewX(-12deg);
+            background-position: 0% 50%;
             opacity: 0.55;
           }
         }
@@ -136,7 +128,7 @@ export default function GameBanner() {
 
       <aside
         aria-label="Анонс разработки и игры"
-        className="aurora-banner relative z-50 w-full select-none overflow-visible px-4 py-2"
+        className="aurora-banner relative z-50 w-full select-none px-4 py-2"
       >
         <div className="aurora-glow" aria-hidden="true" />
         <div className="aurora-ribbon" aria-hidden="true" />
