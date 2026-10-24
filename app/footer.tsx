@@ -4,7 +4,6 @@ export default function Footer() {
   return (
     <footer className="relative z-40 mt-auto">
       <div className="absolute inset-0 border-t border-white/90 bg-white/65 shadow-[0_-1px_18px_rgba(0,0,0,0.025)] backdrop-blur-[28px] backdrop-saturate-150" />
-
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/90" />
 
       <div className="relative mx-auto flex max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between">
@@ -32,7 +31,7 @@ export default function Footer() {
           </Link>
 
           <span className="text-gray-400">
-            © {new Date().getFullYear()} Spidy Tools
+            © 2026 Spidy Tools
           </span>
         </nav>
       </div>
