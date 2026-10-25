@@ -1,35 +1,35 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+const WORDS = [
+  "SEO",
+  "digital",
+  "performance",
+  "контент",
+  "продуктового",
+  "интернет",
+  "любого",
+];
 
 export default function HeroTitle() {
-  const words = [
-    "SEO",
-    "digital",
-    "performance",
-    "контент",
-    "продуктового",
-    "интернет",
-    "любого",
-  ];
-
   const [wordIndex, setWordIndex] = useState(0);
-  const [fade, setFade] = useState(true);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false);
+    const interval = window.setInterval(() => {
+      setVisible(false);
 
-      setTimeout(() => {
-        setWordIndex((prev) => (prev + 1) % words.length);
-        setFade(true);
+      window.setTimeout(() => {
+        setWordIndex((current) => (current + 1) % WORDS.length);
+        setVisible(true);
       }, 300);
     }, 2800);
 
-    return () => clearInterval(interval);
-  }, [words.length]);
+    return () => window.clearInterval(interval);
+  }, []);
 
-  const currentWord = words[wordIndex];
+  const currentWord = WORDS[wordIndex];
 
   const separator =
     currentWord === "любого" || currentWord === "продуктового"
@@ -37,16 +37,17 @@ export default function HeroTitle() {
       : "-";
 
   return (
-    <h1 className="text-[23px] xs:text-2xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#1d1d1f] leading-tight sm:leading-[1.12]">
-      Полезные инструменты <br />
+    <h1 className="text-left text-[42px] font-bold leading-[0.94] tracking-[-0.055em] text-[#0B0B0B] sm:text-[56px] lg:text-[68px] xl:text-[76px]">
+      Полезные инструменты
+      <br />
 
       <span className="whitespace-nowrap">
         для{" "}
         <span
-          className={`inline-block text-blue-600 transition-all duration-300 transform ${
-            fade
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-2"
+          className={`inline-block text-[#FF3830] transition-all duration-300 ease-out ${
+            visible
+              ? "translate-y-0 opacity-100"
+              : "-translate-y-3 opacity-0"
           }`}
         >
           {currentWord}
