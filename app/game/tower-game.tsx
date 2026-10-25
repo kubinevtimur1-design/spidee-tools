@@ -1,6 +1,24 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+
+function getSavedHighScore() {
+  try {
+    const value = Number(localStorage.getItem("spidee_tower_record"));
+    return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function subscribeToHighScore(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+
+function getServerHighScore() {
+  return 0;
+}
 
 interface Block {
   x: number;
@@ -13,7 +31,13 @@ interface Block {
 export default function TowerGame() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  const [sessionHighScore, setHighScore] = useState(0);
+  const savedHighScore = useSyncExternalStore(
+    subscribeToHighScore,
+    getSavedHighScore,
+    getServerHighScore,
+  );
+  const highScore = Math.max(sessionHighScore, savedHighScore);
   const [gameState, setGameState] = useState<"idle" | "playing" | "gameover">("idle");
   const [comboText, setComboText] = useState<string | null>(null);
 
@@ -38,16 +62,7 @@ export default function TowerGame() {
     isPlaying: false,
   });
 
-  useEffect(() => {
-    const saved = localStorage.getItem("spidee_tower_record");
-    if (saved) {
-      const parsed = parseInt(saved, 10);
-      setHighScore(parsed);
-      gameData.current.highScore = parsed;
-    }
-  }, []);
-
-  const startGame = () => {
+  const startGame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -56,7 +71,7 @@ export default function TowerGame() {
 
     gameData.current = {
       score: 0,
-      highScore: gameData.current.highScore,
+      highScore: Math.max(gameData.current.highScore, getSavedHighScore()),
       cameraY: 0,
       targetCameraY: 0,
       blocks: [
@@ -83,7 +98,7 @@ export default function TowerGame() {
     setScore(0);
     setGameState("playing");
     setComboText(null);
-  };
+  }, []);
 
   const dropBlock = () => {
     const g = gameData.current;
@@ -185,7 +200,11 @@ export default function TowerGame() {
               if (g.score > g.highScore) {
                 g.highScore = g.score;
                 setHighScore(g.score);
-                localStorage.setItem("spidee_tower_record", g.score.toString());
+                try {
+                  localStorage.setItem("spidee_tower_record", g.score.toString());
+                } catch {
+                  // Keep the session record even when browser storage is unavailable.
+                }
               }
 
               // Поднимаем камеру, когда башня растет
@@ -273,7 +292,7 @@ export default function TowerGame() {
       cancelAnimationFrame(animId);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [startGame]);
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center select-none">
