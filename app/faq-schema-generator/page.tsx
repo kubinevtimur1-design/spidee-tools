@@ -1,6 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 
 type FAQItem = {
   id: number;
@@ -11,7 +16,6 @@ type FAQItem = {
 const SPIDY_RED = "#FF3830";
 const PAPER = "#F7F5F2";
 const DEEP_BLACK = "#0B0B0B";
-const ACID = "#D7FF00";
 
 export default function FAQSchemaGeneratorPage() {
   const [items, setItems] = useState<FAQItem[]>([
@@ -55,7 +59,9 @@ export default function FAQSchemaGeneratorPage() {
   };
 
   const removeItem = (id: number) => {
-    setItems((current) => current.filter((item) => item.id !== id));
+    setItems((current) =>
+      current.filter((item) => item.id !== id)
+    );
   };
 
   const validItems = useMemo(
@@ -120,48 +126,78 @@ export default function FAQSchemaGeneratorPage() {
       <div className="mx-auto max-w-6xl">
         {/* HERO */}
 
-        <section className="relative mb-12 overflow-hidden border-b-2 border-black pb-10">
-          <div
-            className="absolute right-0 top-0 hidden select-none text-[120px] font-black leading-none sm:block"
-            style={{ color: SPIDY_RED }}
-          >
-            *
-          </div>
+        {/* HERO */}
 
-          <div
-            className="mb-5 inline-flex -rotate-2 items-center px-3 py-1 text-xs font-black uppercase tracking-wider"
-            style={{
-              background: ACID,
-              color: DEEP_BLACK,
-            }}
-          >
-            FREE TOOL
-          </div>
+{/* HERO */}
 
-          <h1 className="max-w-4xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
-            FAQ
-            <br />
-            SCHEMA
-            <span style={{ color: SPIDY_RED }}>.</span>
-          </h1>
+<section className="relative mb-12 overflow-hidden border-b border-[#D1D1D1] pb-10">
+  {/* BACKGROUND SCHEMA PATTERN */}
 
-          <div className="mt-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <p className="max-w-xl text-base font-medium leading-6 sm:text-lg">
-              Генератор JSON-LD разметки для блока FAQ.
-              Добавляй вопросы и ответы — готовый код собирается
-              автоматически.
-            </p>
+  <div
+    className="pointer-events-none absolute -right-10 -top-8 hidden h-[125%] w-[58%] select-none overflow-hidden sm:block"
+    aria-hidden="true"
+  >
+    <pre
+      className="rotate-[-5deg] whitespace-pre font-mono font-bold leading-[1.35]"
+      style={{
+        color: DEEP_BLACK,
+        opacity: 0.055,
+        fontSize: "clamp(11px, 1.15vw, 17px)",
+      }}
+    >{`{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Что такое FAQ Schema?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "FAQ Schema — это структурированные данные для вопросов и ответов."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Как добавить FAQ разметку?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Добавьте вопросы и ответы и скопируйте готовый JSON-LD."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Какой формат используется?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Генератор создаёт разметку в формате JSON-LD."
+      }
+    }
+  ]
+}`}</pre>
+  </div>
 
-            <div
-              className="rotate-[-3deg] text-xl font-black uppercase sm:text-2xl"
-              style={{
-                fontFamily: "cursive",
-                color: SPIDY_RED,
-              }}
-            >
-            </div>
-          </div>
-        </section>
+  {/* FOREGROUND */}
+
+  <div className="relative z-10">
+    <h1 className="max-w-4xl text-5xl font-black uppercase leading-[0.88] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+      FAQ
+      <br />
+
+      <span className="inline-flex items-center">
+        SCHEMA
+        <DraggableStar />
+      </span>
+    </h1>
+
+    <div className="mt-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <p className="max-w-xl text-base font-medium leading-6 sm:text-lg">
+        Генератор JSON-LD разметки для блока FAQ.
+        Добавляй вопросы и ответы — готовый код собирается
+        автоматически.
+      </p>
+    </div>
+  </div>
+</section>
 
         {/* WORKSPACE */}
 
@@ -360,7 +396,9 @@ export default function FAQSchemaGeneratorPage() {
                     color: DEEP_BLACK,
                   }}
                 >
-                  {copied ? "✓ Скопировано" : "Копировать код →"}
+                  {copied
+                    ? "✓ Скопировано"
+                    : "Копировать код →"}
                 </button>
               </div>
             </div>
@@ -399,28 +437,194 @@ export default function FAQSchemaGeneratorPage() {
             </button>
           </section>
         </div>
+      </div>
 
-        {/* BOTTOM BRAND ELEMENT */}
+      <style jsx global>{`
+        @keyframes spidy-spin {
+          from {
+            transform: rotate(0deg);
+          }
 
-        <div className="mt-20 flex items-center justify-between border-t-2 border-black pt-5">
-          <div className="text-xs font-black uppercase tracking-widest">
-            SPIDY TOOLS
-          </div>
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+    </main>
+  );
+}
 
-          <div
-            className="text-4xl font-black leading-none"
-            style={{ color: SPIDY_RED }}
+/* ------------------------------------------------ */
+/* DRAGGABLE STAR                                   */
+/* ------------------------------------------------ */
+
+function DraggableStar() {
+  const starRef = useRef<HTMLSpanElement>(null);
+
+  const dragRef = useRef({
+    dragging: false,
+    pointerId: -1,
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
+  });
+
+  const returnAnimationRef = useRef<Animation | null>(null);
+
+  const setPosition = (x: number, y: number) => {
+    const star = starRef.current;
+    if (!star) return;
+
+    star.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  };
+
+  const handlePointerDown = (
+    event: ReactPointerEvent<HTMLSpanElement>
+  ) => {
+    const star = starRef.current;
+    if (!star) return;
+
+    event.preventDefault();
+
+    returnAnimationRef.current?.cancel();
+    returnAnimationRef.current = null;
+
+    dragRef.current.dragging = true;
+    dragRef.current.pointerId = event.pointerId;
+    dragRef.current.startX =
+      event.clientX - dragRef.current.x;
+    dragRef.current.startY =
+      event.clientY - dragRef.current.y;
+
+    star.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (
+    event: ReactPointerEvent<HTMLSpanElement>
+  ) => {
+    const drag = dragRef.current;
+
+    if (
+      !drag.dragging ||
+      drag.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    drag.x = event.clientX - drag.startX;
+    drag.y = event.clientY - drag.startY;
+
+    setPosition(drag.x, drag.y);
+  };
+
+  const releaseStar = (
+    event: ReactPointerEvent<HTMLSpanElement>
+  ) => {
+    const star = starRef.current;
+    const drag = dragRef.current;
+
+    if (
+      !star ||
+      !drag.dragging ||
+      drag.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    drag.dragging = false;
+
+    if (star.hasPointerCapture(event.pointerId)) {
+      star.releasePointerCapture(event.pointerId);
+    }
+
+    const startX = drag.x;
+    const startY = drag.y;
+
+    const animation = star.animate(
+      [
+        {
+          transform: `translate3d(${startX}px, ${startY}px, 0)`,
+          offset: 0,
+        },
+        {
+          transform: "translate3d(0, 0, 0)",
+          offset: 0.72,
+        },
+        {
+          transform: `translate3d(${
+            startX * -0.035
+          }px, ${startY * -0.035}px, 0)`,
+          offset: 0.84,
+        },
+        {
+          transform: `translate3d(${
+            startX * 0.012
+          }px, ${startY * 0.012}px, 0)`,
+          offset: 0.93,
+        },
+        {
+          transform: "translate3d(0, 0, 0)",
+          offset: 1,
+        },
+      ],
+      {
+        duration: 700,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        fill: "forwards",
+      }
+    );
+
+    returnAnimationRef.current = animation;
+
+    animation.onfinish = () => {
+      drag.x = 0;
+      drag.y = 0;
+
+      star.style.transform = "translate3d(0, 0, 0)";
+
+      animation.cancel();
+      returnAnimationRef.current = null;
+    };
+  };
+
+  return (
+    <span
+      className="relative ml-[0.08em] inline-block h-[0.9em] w-[0.9em] shrink-0 align-baseline"
+      aria-hidden="true"
+    >
+      {/* Слой только для перемещения */}
+
+      <span
+        ref={starRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={releaseStar}
+        onPointerCancel={releaseStar}
+        className="absolute inset-0 z-50 cursor-grab touch-none select-none active:cursor-grabbing"
+        style={{
+          transform: "translate3d(0, 0, 0)",
+          willChange: "transform",
+        }}
+      >
+        {/* Центрирование */}
+
+        <span className="absolute inset-0 flex items-center justify-center">
+          {/* Вращается непосредственно сам символ */}
+
+          <span
+            className="inline-block leading-none"
+            style={{
+              color: SPIDY_RED,
+              fontSize: "1.15em",
+              animation: "spidy-spin 10s linear infinite",
+              transformOrigin: "center center",
+            }}
           >
             *
-          </div>
-
-          <div className="text-right text-xs font-black uppercase tracking-widest">
-            SAME TOOLS.
-            <br />
-            LESS BULLSHIT.
-          </div>
-        </div>
-      </div>
-    </main>
+          </span>
+        </span>
+      </span>
+    </span>
   );
 }

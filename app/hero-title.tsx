@@ -38,7 +38,7 @@ export default function HeroTitle() {
 
   return (
     <>
-      <h1 className="text-left text-[42px] font-bold leading-[0.94] tracking-[-0.055em] text-[#0B0B0B] sm:text-[56px] lg:text-[68px] xl:text-[76px]">
+      <h1 className="text-left text-[42px] font-bold leading-[0.94] tracking-[-0.055em] text-[#242424] sm:text-[56px] lg:text-[68px] xl:text-[76px]">
         Полезные инструменты
         <br />
 
@@ -62,7 +62,7 @@ export default function HeroTitle() {
         .marker-word {
           position: relative;
           display: inline-block;
-          color: #0b0b0b;
+          color: #242424;
           transition:
             opacity 300ms ease-out,
             transform 300ms ease-out;
