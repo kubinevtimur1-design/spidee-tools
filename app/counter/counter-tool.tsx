@@ -2,246 +2,354 @@
 
 import { useMemo, useState } from "react";
 import {
-  DESCRIPTION_CHAR_PRESET,
-  EXAMPLE_DESCRIPTION,
-  EXAMPLE_TITLE,
-  TITLE_CHAR_PRESET,
-  snippetRole,
-  type LimitMode,
+  PLATFORM_PRESETS,
+  getPlatformPreset,
+  type FieldKey,
+  type Platform,
 } from "./serp-limits";
 import SerpPreview from "./serp-preview";
 
-function safeLimit(value: number): number {
-  if (!Number.isFinite(value) || value < 1) return 1;
-  return value;
+type Values = Record<FieldKey, string>;
+
+const EMPTY_VALUES: Values = {
+  custom: "",
+  title: "",
+  description: "",
+  text: "",
+};
+
+function countWords(text: string) {
+  return text.trim() ? text.trim().split(/\s+/).length : 0;
 }
 
 export default function CounterTool() {
-  const [textInput, setTextInput] = useState("");
-  const [selectedLimitMode, setSelectedLimitMode] = useState<LimitMode>("title");
+  const [platform, setPlatform] = useState<Platform>("custom");
+  const [values, setValues] = useState<Values>(EMPTY_VALUES);
   const [customLimit, setCustomLimit] = useState(100);
-  const [copied, setCopied] = useState(false);
+  const [copiedField, setCopiedField] = useState<FieldKey | null>(null);
 
-  const limit = safeLimit(customLimit);
+  const preset = getPlatformPreset(platform);
 
-  const stats = useMemo(() => {
-    const totalChars = textInput.length;
-    const charsWithoutSpaces = textInput.replace(/\s+/g, "").length;
-    const wordsCount = textInput.trim() ? textInput.trim().split(/\s+/).length : 0;
-    const linesCount = textInput ? textInput.split(/\r\n|\r|\n/).length : 0;
+  const activeFields = useMemo(() => {
+    return preset.fields.map((field) => ({
+      ...field,
+      limit:
+        platform === "custom"
+          ? Math.max(1, customLimit || 1)
+          : field.limit,
+    }));
+  }, [preset, platform, customLimit]);
 
-    let targetLimit = TITLE_CHAR_PRESET;
-    let label = "Заголовок";
-    if (selectedLimitMode === "description") {
-      targetLimit = DESCRIPTION_CHAR_PRESET;
-      label = "Описание";
-    } else if (selectedLimitMode === "custom") {
-      targetLimit = limit;
-      label = "Свой лимит";
-    }
+  const combinedText = activeFields
+    .map((field) => values[field.key])
+    .filter(Boolean)
+    .join(" ");
 
-    const percentage = Math.min(Math.round((totalChars / targetLimit) * 100), 100);
-    const isExceeded = totalChars > targetLimit;
-
-    return {
-      totalChars,
-      charsWithoutSpaces,
-      wordsCount,
-      linesCount,
-      targetLimit,
-      label,
-      percentage,
-      isExceeded,
-    };
-  }, [textInput, selectedLimitMode, limit]);
-
-  const fillExample = () => {
-    const role = snippetRole(selectedLimitMode, limit);
-    setTextInput(role === "title" ? EXAMPLE_TITLE : EXAMPLE_DESCRIPTION);
-    setCopied(false);
+  const totalStats = {
+    chars: combinedText.length,
+    charsWithoutSpaces: combinedText.replace(/\s+/g, "").length,
+    words: countWords(combinedText),
+    lines: combinedText
+      ? combinedText.split(/\r\n|\r|\n/).length
+      : 0,
   };
 
-  const copyText = () => {
-    const field = document.getElementById("snippet-source");
-    if (field instanceof HTMLTextAreaElement) {
-      const start = field.selectionStart ?? 0;
-      const end = field.selectionEnd ?? 0;
-      field.focus();
-      field.select();
-      let copiedOk = false;
-      try {
-        copiedOk = document.execCommand("copy");
-      } catch {
-        copiedOk = false;
-      }
-      field.setSelectionRange(start, end);
-      if (copiedOk) {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-        return;
-      }
-    }
+  const changePlatform = (nextPlatform: Platform) => {
+    setPlatform(nextPlatform);
+    setCopiedField(null);
+  };
 
-    void navigator.clipboard.writeText(textInput).then(
-      () => {
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 1500);
-      },
-      () => setCopied(false),
-    );
+  const updateField = (key: FieldKey, value: string) => {
+    setValues((current) => ({
+      ...current,
+      [key]: value,
+    }));
+
+    setCopiedField(null);
+  };
+
+  const fillExample = () => {
+    const next = { ...values };
+
+    preset.fields.forEach((field) => {
+      next[field.key] = field.example;
+    });
+
+    setValues(next);
+    setCopiedField(null);
+  };
+
+  const clearFields = () => {
+    const next = { ...values };
+
+    preset.fields.forEach((field) => {
+      next[field.key] = "";
+    });
+
+    setValues(next);
+    setCopiedField(null);
+  };
+
+  const copyField = async (key: FieldKey) => {
+    const value = values[key];
+
+    if (!value) return;
+
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(key);
+
+      window.setTimeout(() => {
+        setCopiedField(null);
+      }, 1500);
+    } catch {
+      setCopiedField(null);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Что считаем">
-          <ModeButton
-            selected={selectedLimitMode === "title"}
-            onSelect={() => setSelectedLimitMode("title")}
-            label="Заголовок"
-            hint={`Лимит ${TITLE_CHAR_PRESET} символов`}
-          />
-          <ModeButton
-            selected={selectedLimitMode === "description"}
-            onSelect={() => setSelectedLimitMode("description")}
-            label="Описание"
-            hint={`Лимит ${DESCRIPTION_CHAR_PRESET} символов`}
-          />
-          <ModeButton
-            selected={selectedLimitMode === "custom"}
-            onSelect={() => setSelectedLimitMode("custom")}
-            label="Свой лимит"
-            hint="Задать число символов"
-          />
+    <div className="space-y-8">
+      {/* PLATFORM */}
 
-          {selectedLimitMode === "custom" && (
+      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+        <div
+          className="flex w-max gap-2"
+          role="tablist"
+          aria-label="Площадка"
+        >
+          {PLATFORM_PRESETS.map((item) => {
+            const selected = platform === item.id;
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                onClick={() => changePlatform(item.id)}
+                className={[
+                  "h-10 whitespace-nowrap rounded-xl px-5 text-xs font-medium",
+                  "transition-all duration-200 active:scale-[0.97]",
+                  selected
+                    ? "bg-[#0B0B0B] text-white"
+                    : "border border-black/[0.08] text-[#555555] hover:border-black/[0.16] hover:text-[#0B0B0B]",
+                ].join(" ")}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* CONTROLS */}
+
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        {platform === "custom" ? (
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-[#777777]">
+              Лимит
+            </span>
+
             <input
               type="number"
-              value={customLimit}
-              onChange={(event) => setCustomLimit(Number(event.target.value))}
-              className="w-20 px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-800 focus:outline-none focus:border-blue-500"
-              aria-label="Свой лимит, символы"
               min={1}
+              value={customLimit}
+              onChange={(event) =>
+                setCustomLimit(
+                  Math.max(1, Number(event.target.value) || 1)
+                )
+              }
+              className="h-9 w-24 rounded-xl border border-black/[0.1] bg-transparent px-3 text-sm font-semibold text-[#0B0B0B] outline-none transition-colors focus:border-black/[0.3]"
             />
-          )}
-        </div>
 
-        <div className="flex items-center gap-3">
+            <span className="text-xs text-[#999999]">
+              символов
+            </span>
+          </div>
+        ) : (
+          <div />
+        )}
+
+        <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={fillExample}
-            className="text-xs font-medium text-gray-600 hover:text-black"
+            className="text-xs font-medium text-[#555555] transition-colors hover:text-[#0B0B0B]"
           >
             Подставить пример
           </button>
-          {textInput.length > 0 && (
-            <>
-              <button
-                type="button"
-                onClick={copyText}
-                className="text-xs font-medium text-gray-600 hover:text-black"
-              >
-                {copied ? "Скопировано" : "Скопировать"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setTextInput("");
-                  setCopied(false);
-                }}
-                className="text-xs text-gray-400 hover:text-red-500"
-              >
-                Очистить
-              </button>
-            </>
+
+          {combinedText && (
+            <button
+              type="button"
+              onClick={clearFields}
+              className="text-xs font-medium text-[#999999] transition-colors hover:text-[#FF3830]"
+            >
+              Очистить
+            </button>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl border border-gray-200/80 p-4 sm:p-6 space-y-4">
-        <textarea
-          id="snippet-source"
-          value={textInput}
-          onChange={(event) => setTextInput(event.target.value)}
-          placeholder="Напиши title или description…"
-          aria-label="Текст для подсчёта и превью"
-          className="w-full h-40 sm:h-48 bg-transparent text-gray-900 placeholder-gray-400 text-base leading-relaxed focus:outline-none resize-y"
+      {/* FIELDS */}
+
+      <div className="space-y-3">
+        {activeFields.map((field) => {
+          const value = values[field.key];
+          const length = value.length;
+          const exceeded = length > field.limit;
+
+          const percentage = Math.min(
+            (length / field.limit) * 100,
+            100
+          );
+
+          return (
+            <div
+              key={`${platform}-${field.key}`}
+              className="overflow-hidden rounded-[18px] border border-black/[0.08] transition-all duration-300 focus-within:border-black/[0.18] focus-within:shadow-[0_14px_35px_rgba(0,0,0,0.04)]"
+            >
+              <div className="flex items-center justify-between border-b border-black/[0.06] px-5 py-3">
+                <span className="text-xs font-semibold text-[#555555]">
+                  {field.label}
+                </span>
+
+                <div className="flex items-center gap-4">
+                  {value && (
+                    <button
+                      type="button"
+                      onClick={() => copyField(field.key)}
+                      className="text-[11px] font-medium text-[#999999] transition-colors hover:text-[#0B0B0B]"
+                    >
+                      {copiedField === field.key
+                        ? "Скопировано"
+                        : "Скопировать"}
+                    </button>
+                  )}
+
+                  <span
+                    className={[
+                      "text-xs font-bold tabular-nums",
+                      exceeded
+                        ? "text-[#FF3830]"
+                        : "text-[#0B0B0B]",
+                    ].join(" ")}
+                  >
+                    {length} / {field.limit}
+                  </span>
+                </div>
+              </div>
+
+              <textarea
+                value={value}
+                onChange={(event) =>
+                  updateField(field.key, event.target.value)
+                }
+                placeholder={field.placeholder}
+                className="min-h-[130px] w-full resize-y bg-transparent px-5 py-5 text-base leading-relaxed text-[#3A3A3A] outline-none placeholder:text-[#AAAAAA] sm:min-h-[150px]"
+              />
+
+              <div className="px-5 pb-4">
+                <div className="h-1.5 overflow-hidden rounded-full bg-black/[0.06]">
+                  <div
+                    className={[
+                      "h-full rounded-full transition-all duration-300",
+                      exceeded
+                        ? "bg-[#FF3830]"
+                        : length / field.limit >= 0.9
+                          ? "bg-[#D7FF00]"
+                          : "bg-[#0B0B0B]",
+                    ].join(" ")}
+                    style={{
+                      width: `${percentage}%`,
+                    }}
+                  />
+                </div>
+
+                {exceeded && (
+                  <p className="mt-2 text-xs font-medium text-[#FF3830]">
+                    Превышение на {length - field.limit} симв.
+                  </p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* PREVIEW */}
+
+      {platform !== "custom" && (
+        <SerpPreview
+          platform={platform}
+          title={values.title}
+          description={values.description}
+          text={values.text}
+        />
+      )}
+
+      {/* STATS */}
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Stat
+          label="Символов"
+          value={totalStats.chars}
+          featured
         />
 
-        <div className="pt-4 border-t border-gray-100 space-y-2">
-          <div className="flex justify-between items-center gap-3 text-xs">
-            <span className="text-gray-500">{stats.label}</span>
-            <span className={`font-medium tabular-nums ${stats.isExceeded ? "text-red-600" : "text-gray-900"}`}>
-              {stats.totalChars} / {stats.targetLimit}
-              {stats.isExceeded ? " — обрежется" : ""}
-            </span>
-          </div>
+        <Stat
+          label="Без пробелов"
+          value={totalStats.charsWithoutSpaces}
+        />
 
-          <div
-            className="w-full bg-gray-100 h-2 rounded-full overflow-hidden"
-            role="meter"
-            aria-label="Длина текста"
-            aria-valuemin={0}
-            aria-valuemax={stats.targetLimit}
-            aria-valuenow={Math.min(stats.totalChars, stats.targetLimit)}
-          >
-            <div
-              className={`h-full transition-all duration-300 motion-reduce:transition-none ${
-                stats.isExceeded ? "bg-red-500" : "bg-blue-600"
-              }`}
-              style={{ width: `${stats.percentage}%` }}
-            />
-          </div>
+        <Stat
+          label="Слов"
+          value={totalStats.words}
+        />
 
-          {stats.isExceeded && (
-            <p className="text-xs text-red-600 pt-1">Обрежется в выдаче.</p>
-          )}
-        </div>
-      </div>
-
-      <SerpPreview text={textInput} mode={selectedLimitMode} customLimit={limit} />
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Stat label="Символов" value={stats.totalChars} />
-        <Stat label="Без пробелов" value={stats.charsWithoutSpaces} />
-        <Stat label="Слов" value={stats.wordsCount} />
-        <Stat label="Строк" value={stats.linesCount} />
+        <Stat
+          label="Строк"
+          value={totalStats.lines}
+        />
       </div>
     </div>
   );
 }
 
-function ModeButton({
-  selected,
-  onSelect,
+function Stat({
   label,
-  hint,
+  value,
+  featured = false,
 }: {
-  selected: boolean;
-  onSelect: () => void;
   label: string;
-  hint: string;
+  value: number;
+  featured?: boolean;
 }) {
   return (
-    <button
-      type="button"
-      aria-pressed={selected}
-      title={hint}
-      onClick={onSelect}
-      className={`px-3.5 py-1.5 rounded-full text-xs font-medium motion-reduce:transition-none ${
-        selected ? "bg-[#1d1d1f] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200/70"
-      }`}
+    <div
+      className={[
+        "relative min-h-[115px] overflow-hidden rounded-[18px] border p-4 transition-all duration-300 sm:p-5",
+        "hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(0,0,0,0.04)]",
+        featured
+          ? "border-[#FF3830]/10 bg-[#FF3830]/[0.055]"
+          : "border-black/[0.08]",
+      ].join(" ")}
     >
-      {label}
-    </button>
-  );
-}
+      <div className="text-xs font-medium text-[#888888]">
+        {label}
+      </div>
 
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="bg-white p-4 rounded-2xl border border-gray-200/80">
-      <div className="text-xs text-gray-400 font-normal">{label}</div>
-      <div className="text-2xl font-bold text-gray-900 mt-1 tabular-nums">{value}</div>
+      <div
+        className={[
+          "mt-2 text-3xl font-bold tracking-[-0.04em] tabular-nums",
+          featured
+            ? "text-[#FF3830]"
+            : "text-[#0B0B0B]",
+        ].join(" ")}
+      >
+        {value}
+      </div>
     </div>
   );
 }

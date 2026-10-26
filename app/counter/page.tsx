@@ -4,9 +4,9 @@ import CounterTool from "./counter-tool";
 import { pageMetadata } from "../seo";
 
 const CANONICAL = "https://www.spidytools.ru/counter/";
-const PAGE_TITLE = "Подсчёт символов и превью Title/Description — Spidy Tools";
+const PAGE_TITLE = "Подсчёт символов онлайн — Spidy Tools";
 const PAGE_DESCRIPTION =
-  "Считайте символы для Title и Description и сразу смотрите, как сниппет обрежется в Google и Яндексе. Без регистрации.";
+  "Бесплатный подсчёт символов онлайн с лимитами для Google, Яндекса, VK Рекламы и Telegram Ads.";
 
 const sharedMetadata = pageMetadata({
   title: PAGE_TITLE,
@@ -26,23 +26,23 @@ export const metadata: Metadata = {
     url: CANONICAL,
   },
   keywords: [
-    "подсчет символов",
-    "превью сниппета",
+    "подсчёт символов онлайн",
+    "счетчик символов",
+    "количество символов в тексте",
     "длина title",
-    "длина meta description",
-    "калькулятор символов онлайн",
-    "лимит сниппета яндекс",
+    "длина description",
+    "лимит символов",
+    "лимит telegram ads",
+    "лимит vk реклама",
   ],
 };
 
 export default function CounterPage() {
   const pageJsonLd = {
     "@context": "https://schema.org",
-
     "@graph": [
       {
         "@type": "BreadcrumbList",
-
         itemListElement: [
           {
             "@type": "ListItem",
@@ -59,21 +59,19 @@ export default function CounterPage() {
           {
             "@type": "ListItem",
             position: 3,
-            name: "Подсчёт символов и превью сниппета",
+            name: "Подсчёт символов онлайн",
             item: CANONICAL,
           },
         ],
       },
-
       {
         "@type": "WebApplication",
-        name: "Подсчёт символов и превью сниппета",
+        name: "Подсчёт символов онлайн",
         description: PAGE_DESCRIPTION,
         url: CANONICAL,
         applicationCategory: "BusinessApplication",
         operatingSystem: "All",
         browserRequirements: "Requires JavaScript",
-
         offers: {
           "@type": "Offer",
           price: "0",
@@ -84,47 +82,53 @@ export default function CounterPage() {
   };
 
   return (
-    <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-10">
+    <main className="min-h-screen bg-[#F7F5F2] text-[#3A3A3A]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(pageJsonLd),
+        }}
       />
 
-      <header className="mb-8 space-y-2">
-        <nav
-          aria-label="Хлебные крошки"
-          className="flex items-center gap-2 text-xs text-gray-400"
-        >
-          <Link
-            href="/"
-            className="hover:text-black transition-colors"
+      <section>
+        <div className="mx-auto max-w-6xl px-4 pb-10 pt-10 sm:px-6 sm:pt-14">
+          <nav
+            aria-label="Хлебные крошки"
+            className="mb-8 flex items-center gap-2 text-xs font-medium text-[#999999]"
           >
-            Главная
-          </Link>
+            <Link
+              href="/"
+              className="transition-colors hover:text-[#0B0B0B]"
+            >
+              Главная
+            </Link>
 
-          <span>/</span>
+            <span>/</span>
+            <span>Инструменты</span>
+            <span>/</span>
 
-          <span className="text-gray-500">
-            Инструменты
-          </span>
+            <span className="text-[#555555]">
+              Подсчёт символов
+            </span>
+          </nav>
 
-          <span>/</span>
-
-          <span className="text-gray-900 font-medium">
+          <h1 className="max-w-5xl text-[44px] font-bold leading-[0.9] tracking-[-0.055em] text-[#3A3A3A] sm:text-6xl lg:text-[72px]">
             Подсчёт символов
-          </span>
-        </nav>
+            <br />
+            онлайн
+            <span className="text-[#FF3830]">.</span>
+          </h1>
 
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#1d1d1f]">
-          Подсчёт символов и превью сниппета
-        </h1>
+          <h2 className="mt-7 max-w-2xl text-base font-normal leading-6 text-[#777777] sm:text-lg">
+            Проверяй длину текста под нужную площадку или задай собственный
+            лимит символов.
+          </h2>
+        </div>
+      </section>
 
-        <p className="text-sm sm:text-base text-gray-500 max-w-2xl">
-          Пиши title или description — сразу видно, влезет ли в Google и Яндекс.
-        </p>
-      </header>
-
-      <CounterTool />
+      <section className="mx-auto max-w-6xl px-4 pb-14 pt-6 sm:px-6 sm:pb-16 sm:pt-8">
+        <CounterTool />
+      </section>
     </main>
   );
 }
