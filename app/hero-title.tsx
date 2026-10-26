@@ -92,8 +92,7 @@ export default function HeroTitle() {
    * TRANSITION_MS — только длительность движения вверх.
    */
   useEffect(() => {
-    let finishTimer: ReturnType<typeof window.setTimeout> | undefined;
-
+    let finishTimer: number | undefined;
     const interval = window.setInterval(() => {
       measureNextWord();
       setAnimating(true);
