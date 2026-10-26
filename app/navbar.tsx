@@ -46,21 +46,24 @@ const TOOLS: Tool[] = [
   },
 ];
 
+const META_NOTICE = "Выгрузка meta скоро появится";
+const CONTACTS_NOTICE = "Контакты скоро появятся";
+const BLOG_NOTICE = "Блог скоро появится";
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const logoRef = useRef<HTMLImageElement>(null);
+  const logoAnimationRef = useRef<Animation | null>(null);
 
   const showNotice = (text: string) => {
     if (timerRef.current) clearTimeout(timerRef.current);
 
     setNotice(text);
-
-    timerRef.current = setTimeout(() => {
-      setNotice(null);
-    }, 2000);
+    timerRef.current = setTimeout(() => setNotice(null), 2000);
   };
 
   const closeMobileMenu = () => {
@@ -69,9 +72,70 @@ export default function Navbar() {
     setNotice(null);
   };
 
+  const dropLogo = (event: ReactMouseEvent<HTMLImageElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const logo = logoRef.current;
+    const current = logoAnimationRef.current;
+
+    if (
+      !logo ||
+      (current &&
+        current.playState !== "finished" &&
+        current.playState !== "idle")
+    ) {
+      return;
+    }
+
+    const h = window.innerHeight;
+
+    const animation = logo.animate(
+      [
+        {
+          transform: "translateY(0) rotate(0deg)",
+          offset: 0,
+          easing: "cubic-bezier(0.4, 0, 0.9, 0.35)",
+        },
+        {
+          transform: `translateY(${h + 100}px) rotate(900deg)`,
+          offset: 0.43,
+        },
+        {
+          transform: `translateY(-${h + 120}px) rotate(900deg)`,
+          offset: 0.431,
+        },
+        {
+          transform: "translateY(7px) rotate(1760deg)",
+          offset: 0.88,
+          easing: "cubic-bezier(0.1, 0.65, 0.3, 1)",
+        },
+        {
+          transform: "translateY(-7px) rotate(1780deg)",
+          offset: 0.94,
+        },
+        {
+          transform: "translateY(0) rotate(1800deg)",
+          offset: 1,
+        },
+      ],
+      { duration: 2200 }
+    );
+
+    logoAnimationRef.current = animation;
+
+    const reset = () => {
+      logoAnimationRef.current = null;
+    };
+
+    animation.onfinish = reset;
+    animation.oncancel = reset;
+  };
+
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      logoAnimationRef.current?.cancel();
     };
   }, []);
 
@@ -86,12 +150,14 @@ export default function Navbar() {
           className="group flex items-center gap-1.5 transition-transform duration-150 ease-out active:scale-[0.97]"
         >
           <Image
+            ref={logoRef}
             src="/spidy-logo.PNG"
             alt="Spidy Tools"
             width={32}
             height={32}
             priority
-            className="h-8 w-8 object-contain transition-transform duration-300 ease-out group-hover:-rotate-6 group-hover:scale-110 group-active:rotate-0"
+            onClick={dropLogo}
+            className="relative z-[100] h-8 w-8 cursor-pointer object-contain transition-transform duration-300 ease-out group-hover:-rotate-6 group-hover:scale-110 group-active:rotate-0"
           />
 
           <span className="text-[19px] font-black tracking-[-0.04em] text-[#0B0B0B] transition-colors duration-200 group-hover:text-[#FF3830]">
@@ -130,13 +196,11 @@ export default function Navbar() {
                   <ToolItem
                     key={tool.title}
                     tool={tool}
-                    onComingSoon={() =>
-                      showNotice("Выгрузка meta скоро появится")
-                    }
+                    onComingSoon={() => showNotice(META_NOTICE)}
                   />
                 ))}
 
-                {notice === "Выгрузка meta скоро появится" && (
+                {notice === META_NOTICE && (
                   <div className="mx-1 mb-1 mt-1 bg-[#0B0B0B] px-3 py-2 text-center text-[10px] font-bold text-white">
                     {notice}
                   </div>
@@ -147,20 +211,18 @@ export default function Navbar() {
 
           <NavLink href="/pricing">Тарифы</NavLink>
 
-          <NavButton
-            onClick={() => showNotice("Контакты скоро появятся")}
-          >
+          <NavButton onClick={() => showNotice(CONTACTS_NOTICE)}>
             Контакты
           </NavButton>
 
-          <NavButton onClick={() => showNotice("Блог скоро появится")}>
+          <NavButton onClick={() => showNotice(BLOG_NOTICE)}>
             Блог
           </NavButton>
         </nav>
 
         {/* DESKTOP NOTICE */}
 
-        {notice && notice !== "Выгрузка meta скоро появится" && (
+        {notice && notice !== META_NOTICE && (
           <div className="pointer-events-none absolute left-1/2 top-[calc(100%+8px)] hidden -translate-x-1/2 border-2 border-black bg-[#FF3830] px-3 py-2 text-[10px] font-black uppercase shadow-[4px_4px_0_#0B0B0B] md:block">
             {notice}
           </div>
@@ -170,7 +232,7 @@ export default function Navbar() {
 
         <button
           type="button"
-          onClick={() => setMobileOpen((current) => !current)}
+          onClick={() => setMobileOpen((v) => !v)}
           aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
           aria-expanded={mobileOpen}
           className="flex h-10 w-10 items-center justify-center border-2 border-black transition-all duration-150 hover:bg-[#D7FF00] active:scale-90 md:hidden"
@@ -199,8 +261,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* ELASTIC STRING */}
-
       <ElasticString />
 
       {/* MOBILE MENU */}
@@ -215,9 +275,7 @@ export default function Navbar() {
         <div className="px-4 pb-5 pt-3">
           <button
             type="button"
-            onClick={() =>
-              setMobileToolsOpen((current) => !current)
-            }
+            onClick={() => setMobileToolsOpen((v) => !v)}
             className="flex w-full items-center justify-between border-b border-black/15 py-3 text-left text-sm font-black uppercase transition-transform duration-150 active:scale-[0.98]"
           >
             Инструменты
@@ -239,85 +297,30 @@ export default function Navbar() {
             }`}
           >
             <div className="border-b border-black/15 py-2">
-              {TOOLS.map((tool) => {
-                if (tool.href) {
-                  return (
-                    <Link
-                      key={tool.title}
-                      href={tool.href}
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-3 px-2 py-3 transition-all duration-150 hover:bg-[#D7FF00] active:scale-[0.98] active:bg-[#FF3830]"
-                    >
-                      <ToolIcon>{tool.icon}</ToolIcon>
-
-                      <div>
-                        <div className="text-sm font-bold">
-                          {tool.title}
-                        </div>
-
-                        <div className="text-[10px] font-medium opacity-50">
-                          {tool.description}
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                }
-
-                return (
-                  <button
-                    key={tool.title}
-                    type="button"
-                    onClick={() =>
-                      showNotice("Выгрузка meta скоро появится")
-                    }
-                    className="flex w-full items-center gap-3 px-2 py-3 text-left transition-all duration-150 hover:bg-[#D7FF00] active:scale-[0.98] active:bg-[#FF3830]"
-                  >
-                    <ToolIcon>{tool.icon}</ToolIcon>
-
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold">
-                          {tool.title}
-                        </span>
-
-                        <span className="bg-[#D7FF00] px-1.5 py-0.5 text-[8px] font-black uppercase">
-                          скоро
-                        </span>
-                      </div>
-
-                      <div className="text-[10px] font-medium opacity-50">
-                        {tool.description}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+              {TOOLS.map((tool) => (
+                <MobileToolItem
+                  key={tool.title}
+                  tool={tool}
+                  onNavigate={closeMobileMenu}
+                  onComingSoon={() => showNotice(META_NOTICE)}
+                />
+              ))}
             </div>
           </div>
 
-          <Link
-            href="/pricing"
-            onClick={closeMobileMenu}
-            className="block border-b border-black/15 py-3 text-sm font-black uppercase transition-all duration-150 hover:pl-2 hover:text-[#FF3830] active:scale-[0.98]"
-          >
+          <MobileNavLink href="/pricing" onClick={closeMobileMenu}>
             Тарифы
-          </Link>
+          </MobileNavLink>
 
-          <button
-            type="button"
-            onClick={() => showNotice("Контакты скоро появятся")}
-            className="block w-full border-b border-black/15 py-3 text-left text-sm font-black uppercase transition-all duration-150 hover:pl-2 hover:text-[#FF3830] active:scale-[0.98]"
+          <MobileNavButton
+            onClick={() => showNotice(CONTACTS_NOTICE)}
           >
             Контакты
-          </button>
+          </MobileNavButton>
 
-          <button
-            type="button"
-            onClick={() => showNotice("Блог скоро появится")}
-            className="block w-full border-b border-black/15 py-3 text-left text-sm font-black uppercase transition-all duration-150 hover:pl-2 hover:text-[#FF3830] active:scale-[0.98]"
-          >
+          <MobileNavButton onClick={() => showNotice(BLOG_NOTICE)}>
             Блог
-          </button>
+          </MobileNavButton>
 
           {notice && (
             <div className="mt-4 border-2 border-black bg-[#FF3830] px-3 py-2 text-center text-[10px] font-black uppercase">
@@ -339,7 +342,7 @@ function ElasticString() {
   const pathRef = useRef<SVGPathElement>(null);
   const frameRef = useRef<number | null>(null);
 
-  const stateRef = useRef({
+  const state = useRef({
     x: 0.5,
     y: 0,
     velocity: 0,
@@ -350,40 +353,28 @@ function ElasticString() {
   });
 
   const draw = useCallback(() => {
-    const path = pathRef.current;
-    if (!path) return;
+    const s = state.current;
 
-    const state = stateRef.current;
-
-    const width = 1000;
-    const baseY = 20;
-
-    const controlX = state.x * width;
-    const controlY = baseY + state.y;
-
-    path.setAttribute(
+    pathRef.current?.setAttribute(
       "d",
-      `M 0 ${baseY} Q ${controlX} ${controlY} 1000 ${baseY}`
+      `M 0 20 Q ${s.x * 1000} ${20 + s.y} 1000 20`
     );
   }, []);
 
   const animate = useCallback(() => {
-    const state = stateRef.current;
+    const s = state.current;
 
-    if (!state.interacting) {
-      const spring = 0.09;
-      const damping = 0.91;
-
-      state.velocity += -state.y * spring;
-      state.velocity *= damping;
-      state.y += state.velocity;
+    if (!s.interacting) {
+      s.velocity += -s.y * 0.09;
+      s.velocity *= 0.91;
+      s.y += s.velocity;
 
       if (
-        Math.abs(state.y) < 0.03 &&
-        Math.abs(state.velocity) < 0.03
+        Math.abs(s.y) < 0.03 &&
+        Math.abs(s.velocity) < 0.03
       ) {
-        state.y = 0;
-        state.velocity = 0;
+        s.y = 0;
+        s.velocity = 0;
         draw();
         frameRef.current = null;
         return;
@@ -394,9 +385,10 @@ function ElasticString() {
     frameRef.current = requestAnimationFrame(animate);
   }, [draw]);
 
-  const startAnimation = useCallback(() => {
-    if (frameRef.current !== null) return;
-    frameRef.current = requestAnimationFrame(animate);
+  const start = useCallback(() => {
+    if (frameRef.current === null) {
+      frameRef.current = requestAnimationFrame(animate);
+    }
   }, [animate]);
 
   const handleMouseMove = (
@@ -406,93 +398,77 @@ function ElasticString() {
     if (!wrapper) return;
 
     const rect = wrapper.getBoundingClientRect();
-    const state = stateRef.current;
+    const s = state.current;
+    const now = performance.now();
 
-    const x = Math.max(
+    if (!s.initialized) {
+      s.lastMouseY = event.clientY;
+      s.lastTime = now;
+      s.initialized = true;
+    }
+
+    const velocity =
+      ((event.clientY - s.lastMouseY) /
+        Math.max(8, now - s.lastTime)) *
+      16.67;
+
+    s.x = Math.max(
       0.03,
       Math.min(0.97, (event.clientX - rect.left) / rect.width)
     );
 
-    const centerY = rect.top + rect.height / 2;
-    const mouseY = event.clientY - centerY;
+    s.interacting = true;
 
-    const now = performance.now();
+    const pull = Math.max(
+      -14,
+      Math.min(
+        14,
+        event.clientY - (rect.top + rect.height / 2)
+      )
+    );
 
-    if (!state.initialized) {
-      state.lastMouseY = event.clientY;
-      state.lastTime = now;
-      state.initialized = true;
-    }
+    s.y += (pull - s.y) * 0.42;
+    s.velocity += velocity * 0.18;
+    s.lastMouseY = event.clientY;
+    s.lastTime = now;
 
-    const dt = Math.max(8, now - state.lastTime);
-    const mouseVelocity =
-      ((event.clientY - state.lastMouseY) / dt) * 16.67;
-
-    state.x = x;
-    state.interacting = true;
-
-    /*
-     * The string follows the pointer while the cursor
-     * is inside the interaction zone.
-     */
-    const pull = Math.max(-14, Math.min(14, mouseY));
-
-    state.y += (pull - state.y) * 0.42;
-
-    /*
-     * Cursor speed adds energy to the string.
-     */
-    state.velocity += mouseVelocity * 0.18;
-
-    state.lastMouseY = event.clientY;
-    state.lastTime = now;
-
-    startAnimation();
+    start();
   };
 
   const releaseString = (
     event: ReactMouseEvent<HTMLDivElement>
   ) => {
-    const state = stateRef.current;
+    const s = state.current;
     const now = performance.now();
 
-    const dt = Math.max(8, now - state.lastTime);
+    const velocity =
+      ((event.clientY - s.lastMouseY) /
+        Math.max(8, now - s.lastTime)) *
+      16.67;
 
-    const cursorVelocity =
-      ((event.clientY - state.lastMouseY) / dt) * 16.67;
-
-    /*
-     * Final impulse.
-     * Fast crossing = stronger vibration.
-     */
-    const impulse = Math.max(
+    s.velocity += Math.max(
       -12,
-      Math.min(12, cursorVelocity * 0.75)
+      Math.min(12, velocity * 0.75)
     );
 
-    state.velocity += impulse;
-
-    /*
-     * Give the string a minimum kick even when
-     * the cursor crosses it slowly.
-     */
-    if (Math.abs(state.velocity) < 2.2) {
-      state.velocity += state.y >= 0 ? -2.2 : 2.2;
+    if (Math.abs(s.velocity) < 2.2) {
+      s.velocity += s.y >= 0 ? -2.2 : 2.2;
     }
 
-    state.interacting = false;
-    state.initialized = false;
+    s.interacting = false;
+    s.initialized = false;
 
-    startAnimation();
+    start();
   };
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
       }
-    };
-  }, []);
+    },
+    []
+  );
 
   return (
     <div
@@ -521,7 +497,7 @@ function ElasticString() {
 }
 
 /* ------------------------------------------------ */
-/* TOOL ITEM                                        */
+/* TOOL ITEMS                                       */
 /* ------------------------------------------------ */
 
 function ToolItem({
@@ -531,42 +507,16 @@ function ToolItem({
   tool: Tool;
   onComingSoon: () => void;
 }) {
-  const content = (
-    <>
-      <ToolIcon>{tool.icon}</ToolIcon>
-
-      <div className="min-w-0 flex-1 transition-transform duration-200 group-hover/tool:translate-x-1">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[13px] font-bold">
-            {tool.title}
-          </span>
-
-          {tool.comingSoon && (
-            <span className="bg-[#D7FF00] px-1.5 py-0.5 text-[8px] font-black uppercase transition-colors duration-150 group-hover/tool:bg-[#FF3830]">
-              скоро
-            </span>
-          )}
-        </div>
-
-        <div className="mt-0.5 text-[10px] font-medium opacity-50">
-          {tool.description}
-        </div>
-      </div>
-    </>
-  );
-
   const className =
-    "group/tool flex w-full items-center gap-3 px-3 py-2.5 text-left transition-all duration-150 ease-out hover:translate-x-1 hover:bg-[#D7FF00] active:scale-[0.98] active:bg-[#FF3830]";
+    "group/tool flex w-full items-center gap-3 px-3 py-2.5 text-left active:scale-[0.98]";
 
-  if (tool.href) {
-    return (
-      <Link href={tool.href} className={className}>
-        {content}
-      </Link>
-    );
-  }
+  const content = <ToolContent tool={tool} desktop />;
 
-  return (
+  return tool.href ? (
+    <Link href={tool.href} className={className}>
+      {content}
+    </Link>
+  ) : (
     <button
       type="button"
       onClick={onComingSoon}
@@ -577,13 +527,124 @@ function ToolItem({
   );
 }
 
+function MobileToolItem({
+  tool,
+  onNavigate,
+  onComingSoon,
+}: {
+  tool: Tool;
+  onNavigate: () => void;
+  onComingSoon: () => void;
+}) {
+  const className =
+    "group/tool flex w-full items-center gap-3 px-2 py-3 text-left active:scale-[0.98]";
+
+  const content = <ToolContent tool={tool} />;
+
+  return tool.href ? (
+    <Link
+      href={tool.href}
+      onClick={onNavigate}
+      className={className}
+    >
+      {content}
+    </Link>
+  ) : (
+    <button
+      type="button"
+      onClick={onComingSoon}
+      className={className}
+    >
+      {content}
+    </button>
+  );
+}
+
+function ToolContent({
+  tool,
+  desktop = false,
+}: {
+  tool: Tool;
+  desktop?: boolean;
+}) {
+  return (
+    <>
+      <ToolIcon>{tool.icon}</ToolIcon>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className={`relative inline-block ${
+              desktop ? "text-[13px]" : "text-sm"
+            } font-bold`}
+          >
+            {/* ACID MARKER */}
+
+            <span
+              className="pointer-events-none absolute -left-[0.12em] -right-[0.14em] top-[54%] z-0 h-[0.82em] origin-left -translate-y-1/2 -rotate-2 scale-x-[0.78] bg-[#D7FF00]/90 opacity-0 transition-all duration-200 ease-out group-hover/tool:scale-x-100 group-hover/tool:opacity-100"
+              style={{
+                clipPath:
+                  "polygon(1% 13%, 8% 6%, 19% 10%, 31% 4%, 45% 8%, 57% 3%, 70% 7%, 83% 2%, 96% 8%, 100% 20%, 98% 83%, 91% 91%, 79% 87%, 66% 94%, 52% 88%, 39% 95%, 25% 89%, 13% 94%, 2% 85%)",
+              }}
+            />
+
+            <span
+              className="pointer-events-none absolute -left-[0.08em] -right-[0.1em] top-[58%] z-0 h-[0.58em] origin-left -translate-y-1/2 rotate-[0.8deg] scale-x-[0.78] bg-[#D7FF00]/30 opacity-0 transition-all duration-200 ease-out group-hover/tool:scale-x-100 group-hover/tool:opacity-100"
+              style={{
+                clipPath:
+                  "polygon(0 15%, 15% 7%, 30% 13%, 48% 5%, 65% 11%, 82% 4%, 100% 12%, 98% 87%, 79% 93%, 60% 86%, 42% 94%, 21% 88%, 2% 94%)",
+              }}
+            />
+
+            <span className="relative z-10">
+              {tool.title}
+            </span>
+          </span>
+
+          {tool.comingSoon && (
+            <span className="relative shrink-0 px-1.5 py-0.5 text-[8px] font-black uppercase">
+              <span
+                className="pointer-events-none absolute -inset-x-[0.15em] inset-y-0 z-0 rotate-[1.5deg] bg-[#FF3830]"
+                style={{
+                  clipPath:
+                    "polygon(2% 10%, 15% 4%, 29% 8%, 43% 3%, 59% 7%, 73% 2%, 88% 7%, 98% 4%, 100% 85%, 87% 92%, 72% 87%, 56% 94%, 40% 88%, 24% 94%, 8% 88%, 1% 93%)",
+                }}
+              />
+
+              <span className="relative z-10">скоро</span>
+            </span>
+          )}
+        </div>
+
+        <div
+          className={
+            desktop
+              ? "mt-0.5 text-[10px] font-medium opacity-50"
+              : "text-[10px] font-medium opacity-50"
+          }
+        >
+          {tool.description}
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ------------------------------------------------ */
+/* TOOL ICON                                        */
+/* ------------------------------------------------ */
+
 function ToolIcon({ children }: { children: ReactNode }) {
   return (
-    <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-[#0B0B0B] text-[11px] font-black text-white transition-transform duration-200 group-hover/tool:-rotate-3 group-hover/tool:scale-110">
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center text-[17px] font-black text-[#0B0B0B] transition-transform duration-200 ease-out group-hover/tool:-rotate-6 group-hover/tool:scale-125">
       {children}
     </span>
   );
 }
+
+/* ------------------------------------------------ */
+/* NAV LINKS                                        */
+/* ------------------------------------------------ */
 
 function NavLink({
   href,
@@ -614,6 +675,47 @@ function NavButton({
       type="button"
       onClick={onClick}
       className="transition-all duration-150 ease-out hover:text-[#FF3830] active:scale-[0.94]"
+    >
+      {children}
+    </button>
+  );
+}
+
+const mobileNavClass =
+  "block border-b border-black/15 py-3 text-sm font-black uppercase transition-all duration-150 hover:pl-2 hover:text-[#FF3830] active:scale-[0.98]";
+
+function MobileNavLink({
+  href,
+  children,
+  onClick,
+}: {
+  href: string;
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={mobileNavClass}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function MobileNavButton({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full text-left ${mobileNavClass}`}
     >
       {children}
     </button>
