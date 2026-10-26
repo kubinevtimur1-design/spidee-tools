@@ -143,7 +143,10 @@ export default function HeroTitle() {
                   ? { width: `${slotWidth}px` }
                   : undefined
               }
-            >
+            >{/*
+              No whitespace before the clip: a text node here is in-flow
+              and would widen the slot.
+            */}<span className="word-slot-clip">
               <span
                 className={`animated-word current-word ${
                   animating ? "current-word--leave" : ""
@@ -165,7 +168,7 @@ export default function HeroTitle() {
                   {nextWord}
                 </span>
               </span>
-            </span>
+            </span></span>
 
             <span className="marketing-word">
               {visibleSeparator}маркетолога
@@ -222,23 +225,42 @@ export default function HeroTitle() {
 
         /*
          * Окно показывает только одно динамическое слово.
-         * Его ширина плавно принимает ширину следующего.
+         * Ширина слота плавно принимает ширину следующего.
+         *
+         * Высота — строка заголовка, не 1em. overflow:hidden на самом
+         * inline-block прижал бы baseline к нижнему краю и поднял слово
+         * над «для» и «маркетолога». Baseline держит ::before,
+         * клип анимации — внутренний слой.
          */
-.word-slot {
-  position: relative;
-  display: inline-block;
-  flex: 0 0 auto;
+        .word-slot {
+          position: relative;
+          display: inline-block;
+          flex: 0 0 auto;
 
-  width: auto;
-  height: 1em;
+          width: auto;
+          min-width: 0;
 
-  overflow: hidden;
+          overflow: visible;
+          vertical-align: baseline;
 
-  vertical-align: baseline;
+          transition: width 220ms
+            cubic-bezier(0.22, 1, 0.36, 1);
+        }
 
-  transition: width 220ms
-    cubic-bezier(0.22, 1, 0.36, 1);
-}
+        .word-slot::before {
+          content: "\\200b";
+          visibility: hidden;
+        }
+
+        .word-slot-clip {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: -0.18em;
+
+          overflow: hidden;
+        }
 
 .animated-word {
   position: absolute;
