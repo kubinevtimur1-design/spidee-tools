@@ -23,8 +23,13 @@ function CopyEmail() {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number | null>(null);
 
-  useEffect(() => () => timer.current && clearTimeout(timer.current), []);
-
+  useEffect(() => {
+    return () => {
+      if (timer.current !== null) {
+        clearTimeout(timer.current);
+      }
+    };
+  }, []);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(EMAIL);
