@@ -22,8 +22,12 @@ const FOOTER_LINKS = [
     label: "FAQ Schema",
   },
   {
-    href: "/pricing/",
-    label: "Тарифы",
+    href: "/about/",
+    label: "О нас",
+  },
+  {
+    href: "/contacts/",
+    label: "Контакты",
   },
 ];
 

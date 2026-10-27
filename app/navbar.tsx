@@ -47,7 +47,6 @@ const TOOLS: Tool[] = [
 ];
 
 const META_NOTICE = "Выгрузка meta скоро появится";
-const CONTACTS_NOTICE = "Контакты скоро появятся";
 const BLOG_NOTICE = "Блог скоро появится";
 
 export default function Navbar() {
@@ -223,28 +222,17 @@ export default function Navbar() {
             </div>
           </div>
 
-          <NavLink href="/pricing">
-            Тарифы
+          <NavLink href="/about">
+  О нас
+</NavLink>
+
+          <NavLink href="/contacts">
+            Контакты
           </NavLink>
 
           <NavButton
-            onClick={() => showNotice(CONTACTS_NOTICE)}
-            notice={
-              notice === CONTACTS_NOTICE
-                ? notice
-                : undefined
-            }
-          >
-            Контакты
-          </NavButton>
-
-          <NavButton
             onClick={() => showNotice(BLOG_NOTICE)}
-            notice={
-              notice === BLOG_NOTICE
-                ? notice
-                : undefined
-            }
+            notice={notice === BLOG_NOTICE ? notice : undefined}
           >
             Блог
           </NavButton>
@@ -255,20 +243,14 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setMobileOpen((value) => !value)}
-          aria-label={
-            mobileOpen
-              ? "Закрыть меню"
-              : "Открыть меню"
-          }
+          aria-label={mobileOpen ? "Закрыть меню" : "Открыть меню"}
           aria-expanded={mobileOpen}
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/[0.1] transition-all duration-200 hover:border-black/[0.2] hover:bg-black/[0.04] active:scale-90 md:hidden"
         >
           <div className="relative h-4 w-5">
             <span
               className={`absolute left-0 h-0.5 w-5 rounded-full bg-black transition-all duration-300 ${
-                mobileOpen
-                  ? "top-[7px] rotate-45"
-                  : "top-0"
+                mobileOpen ? "top-[7px] rotate-45" : "top-0"
               }`}
             />
 
@@ -305,9 +287,7 @@ export default function Navbar() {
         <div className="mx-auto max-w-6xl px-4 pb-5 pt-3 sm:px-6">
           <button
             type="button"
-            onClick={() =>
-              setMobileToolsOpen((value) => !value)
-            }
+            onClick={() => setMobileToolsOpen((value) => !value)}
             className="flex w-full items-center justify-between border-b border-black/[0.08] py-3.5 text-left text-sm font-bold transition-colors duration-200"
           >
             Инструменты
@@ -346,30 +326,22 @@ export default function Navbar() {
           </div>
 
           <MobileNavLink
-            href="/pricing"
+  href="/about"
+  onClick={closeMobileMenu}
+>
+  О нас
+</MobileNavLink>
+
+          <MobileNavLink
+            href="/contacts"
             onClick={closeMobileMenu}
           >
-            Тарифы
+            Контакты
           </MobileNavLink>
 
           <MobileNavButton
-            onClick={() => showNotice(CONTACTS_NOTICE)}
-            notice={
-              notice === CONTACTS_NOTICE
-                ? notice
-                : undefined
-            }
-          >
-            Контакты
-          </MobileNavButton>
-
-          <MobileNavButton
             onClick={() => showNotice(BLOG_NOTICE)}
-            notice={
-              notice === BLOG_NOTICE
-                ? notice
-                : undefined
-            }
+            notice={notice === BLOG_NOTICE ? notice : undefined}
           >
             Блог
           </MobileNavButton>
@@ -581,11 +553,7 @@ function ToolItem({
         {content}
       </button>
 
-      {notice && (
-        <InlineNotice>
-          {notice}
-        </InlineNotice>
-      )}
+      {notice && <InlineNotice>{notice}</InlineNotice>}
     </div>
   );
 }
@@ -629,11 +597,7 @@ function MobileToolItem({
         {content}
       </button>
 
-      {notice && (
-        <MobileInlineNotice>
-          {notice}
-        </MobileInlineNotice>
-      )}
+      {notice && <MobileInlineNotice>{notice}</MobileInlineNotice>}
     </div>
   );
 }
@@ -651,9 +615,7 @@ function ToolContent({
 }) {
   return (
     <>
-      <ToolIcon>
-        {tool.icon}
-      </ToolIcon>
+      <ToolIcon>{tool.icon}</ToolIcon>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
@@ -818,11 +780,7 @@ function MobileNavButton({
         {children}
       </button>
 
-      {notice && (
-        <MobileInlineNotice>
-          {notice}
-        </MobileInlineNotice>
-      )}
+      {notice && <MobileInlineNotice>{notice}</MobileInlineNotice>}
     </div>
   );
 }
