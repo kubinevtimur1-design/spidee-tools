@@ -47,7 +47,6 @@ const TOOLS: Tool[] = [
 ];
 
 const META_NOTICE = "Выгрузка meta скоро появится";
-const BLOG_NOTICE = "Блог скоро появится";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -230,12 +229,9 @@ export default function Navbar() {
             Контакты
           </NavLink>
 
-          <NavButton
-            onClick={() => showNotice(BLOG_NOTICE)}
-            notice={notice === BLOG_NOTICE ? notice : undefined}
-          >
-            Блог
-          </NavButton>
+          <NavLink href="/game">
+  Играть
+</NavLink>
         </nav>
 
         {/* MOBILE BUTTON */}
@@ -339,12 +335,12 @@ export default function Navbar() {
             Контакты
           </MobileNavLink>
 
-          <MobileNavButton
-            onClick={() => showNotice(BLOG_NOTICE)}
-            notice={notice === BLOG_NOTICE ? notice : undefined}
-          >
-            Блог
-          </MobileNavButton>
+          <MobileNavLink
+  href="/game"
+  onClick={closeMobileMenu}
+>
+  Играть
+</MobileNavLink>
         </div>
       </div>
     </header>
