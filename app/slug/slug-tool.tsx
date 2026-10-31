@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { track } from "@/lib/metrika";
+import { useToolUse } from "@/lib/use-tool-use";
 import {
   EXAMPLE_HEADLINE,
   EXAMPLE_SLUG,
@@ -43,6 +45,8 @@ export default function SlugTool() {
   const long = slug.length > SLUG_SOFT_LIMIT;
   const hasTitle = title.trim().length > 0;
 
+  useToolUse("slug", slug);
+
   const updateTitle = (value: string) => {
     setTitle(value);
     setCopied(false);
@@ -63,6 +67,7 @@ export default function SlugTool() {
     }
     setCopyError(false);
     setCopied(true);
+    track("copy_result");
     window.setTimeout(() => setCopied(false), 1500);
   };
 

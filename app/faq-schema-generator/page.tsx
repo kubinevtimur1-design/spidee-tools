@@ -8,6 +8,8 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { track } from "@/lib/metrika";
+import { useToolUse } from "@/lib/use-tool-use";
 
 type FAQItem = {
   id: number;
@@ -97,8 +99,11 @@ export default function FAQSchemaGeneratorPage() {
 
   const code = `<script type="application/ld+json">\n${json}\n</script>`;
 
+  useToolUse("faq", validItems.length > 0 ? code : "");
+
   const copyCode = async () => {
     await navigator.clipboard.writeText(code);
+    track("copy_result");
     setCopied(true);
 
     window.setTimeout(() => {

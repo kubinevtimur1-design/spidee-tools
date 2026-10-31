@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 import Navbar from "./navbar";
 import Footer from "./footer";
+import MetrikaHits from "./metrika-hits";
+import { METRIKA_INLINE, METRIKA_WATCH_SRC } from "@/lib/metrika";
 import "./globals.css";
 
 const inter = Inter({
@@ -125,6 +128,16 @@ export default function RootLayout({
         </div>
 
         <Footer />
+
+        <Script id="yandex-metrika" strategy="afterInteractive">
+          {METRIKA_INLINE}
+        </Script>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `<noscript><div><img src="${METRIKA_WATCH_SRC}" style="position:absolute;left:-9999px;" alt="" /></div></noscript>`,
+          }}
+        />
+        <MetrikaHits />
       </body>
     </html>
   );
