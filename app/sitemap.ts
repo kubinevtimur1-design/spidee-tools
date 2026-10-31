@@ -36,10 +36,22 @@ const pages: MetadataRoute.Sitemap = [
     priority: 0.9,
   },
   {
-    url: "https://spidytools.ru/pricing/",
+    url: "https://spidytools.ru/faq-schema-generator/",
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    url: "https://spidytools.ru/about/",
     lastModified,
     changeFrequency: "monthly",
-    priority: 0.6,
+    priority: 0.5,
+  },
+  {
+    url: "https://spidytools.ru/contacts/",
+    lastModified,
+    changeFrequency: "monthly",
+    priority: 0.5,
   },
   {
     url: "https://spidytools.ru/game/",

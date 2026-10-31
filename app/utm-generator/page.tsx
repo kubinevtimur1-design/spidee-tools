@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "../seo";
 import UtmTool from "./utm-tool";
 
-const CANONICAL = "https://www.spidytools.ru/utm-generator/";
+const CANONICAL = "https://spidytools.ru/utm-generator/";
 const PAGE_TITLE =
   "Генератор UTM-меток и QR-код — Директ, VK, Google Ads | Spidy Tools";
 const PAGE_DESCRIPTION =
