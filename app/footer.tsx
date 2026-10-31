@@ -18,6 +18,10 @@ const FOOTER_LINKS = [
     label: "Генератор UTM",
   },
   {
+    href: "/erid/",
+    label: "Маркировка erid",
+  },
+  {
     href: "/qr/",
     label: "QR-код",
   },

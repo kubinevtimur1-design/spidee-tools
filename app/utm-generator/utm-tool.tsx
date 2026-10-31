@@ -8,6 +8,11 @@ import {
   type CSSProperties,
 } from "react";
 import Link from "next/link";
+import {
+  appendErid,
+  isShortenerUrl,
+  isValidErid,
+} from "../erid/erid";
 import { copyPngToClipboard } from "./copy-png";
 import { buildQrAsset, type QrAsset } from "./qr";
 import {
@@ -174,6 +179,7 @@ function downloadSvg(svg: string) {
 
 export default function UtmTool() {
   const [url, setUrl] = useState("");
+  const [erid, setErid] = useState("");
   const [utm, setUtm] = useState<UtmValues>(EMPTY_UTM);
   const [platformId, setPlatformId] = useState("yandex");
   const [customParams, setCustomParams] = useState<CustomParam[]>([]);
@@ -278,10 +284,18 @@ export default function UtmTool() {
     setCopied(false);
   };
 
-  const result = useMemo(
+  const eridToken = erid.trim();
+  const eridReady = isValidErid(eridToken);
+
+  const builtUrl = useMemo(
     () => buildUtmUrl(url, utm, customParams),
     [url, utm, customParams],
   );
+
+  const result = useMemo(() => {
+    if (!builtUrl || !eridReady) return builtUrl;
+    return appendErid(builtUrl, eridToken);
+  }, [builtUrl, eridReady, eridToken]);
 
   const qrReady = shouldShowQr(result);
 
@@ -395,6 +409,7 @@ export default function UtmTool() {
 
   const reset = () => {
     setUrl("");
+    setErid("");
     setUtm(EMPTY_UTM);
     setCustomParams([]);
     setPlatformId("yandex");
@@ -458,12 +473,21 @@ export default function UtmTool() {
               площадок и создавай QR-коды.
             </h2>
 
-            <Link
-              href="/qr/"
-              className="relative z-10 mt-4 inline-block text-xs font-medium text-[#999999] transition-colors hover:text-[#0B0B0B]"
-            >
-              Нужен просто QR? →
-            </Link>
+            <div className="relative z-10 mt-4 flex flex-col items-start gap-2">
+              <Link
+                href="/qr/"
+                className="text-xs font-medium text-[#999999] transition-colors hover:text-[#0B0B0B]"
+              >
+                Нужен просто QR? →
+              </Link>
+
+              <Link
+                href="/erid/"
+                className="text-xs font-medium text-[#999999] transition-colors hover:text-[#0B0B0B]"
+              >
+                Нужна пометка для рекламы? → Маркировка erid
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -704,6 +728,52 @@ export default function UtmTool() {
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+
+            <div className="rounded-[18px] border border-black/[0.08] p-5 sm:p-6">
+              <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <label
+                  htmlFor="utm-erid"
+                  className="text-sm font-bold tracking-[-0.02em] text-[#0B0B0B]"
+                >
+                  erid
+                </label>
+
+                <span className="text-sm text-[#0B0B0B]/40">
+                  · необязательно
+                </span>
+              </div>
+
+              <input
+                id="utm-erid"
+                type="text"
+                value={erid}
+                onChange={(event) => {
+                  setErid(event.target.value);
+                  setCopied(false);
+                }}
+                placeholder="2VtzqvXXXXX"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                className="h-11 w-full rounded-xl border border-black/[0.1] bg-transparent px-4 text-sm text-[#242424] outline-none transition-all placeholder:text-[#AAAAAA] focus:border-black/[0.3]"
+              />
+
+              <p className="mt-3 text-xs leading-5 text-[#888888]">
+                Токен из ОРД. В ссылку попадёт как есть, регистр не меняется.
+              </p>
+
+              {eridToken && !eridReady && (
+                <p role="alert" className="mt-2 text-sm text-[#D52D27]">
+                  Токен — только латиница и цифры.
+                </p>
+              )}
+
+              {eridToken && isShortenerUrl(url) && (
+                <p className="mt-3 rounded-xl bg-[#D7FF00]/60 px-4 py-3 text-sm leading-5 text-[#0B0B0B]">
+                  Сокращалка спрячет erid. Поставь полную ссылку.
+                </p>
               )}
             </div>
 

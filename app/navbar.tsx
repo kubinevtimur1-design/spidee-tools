@@ -21,25 +21,31 @@ type Tool = {
 
 const TOOLS: Tool[] = [
   {
-    href: "/counter",
+    href: "/counter/",
     title: "Подсчет символов",
     description: "Title и Description",
     icon: "T",
   },
   {
-    href: "/utm-generator",
+    href: "/utm-generator/",
     title: "Генератор UTM",
     description: "Разметка рекламных ссылок",
     icon: "↗",
   },
   {
-    href: "/qr",
+    href: "/erid/",
+    title: "Маркировка",
+    description: "Пометка и erid",
+    icon: "Er",
+  },
+  {
+    href: "/qr/",
     title: "QR-код",
     description: "Ссылка или текст в код",
     icon: "▣",
   },
   {
-    href: "/faq-schema-generator",
+    href: "/faq-schema-generator/",
     title: "FAQ Schema",
     description: "JSON-LD разметка FAQ",
     icon: "{}",
@@ -227,15 +233,15 @@ export default function Navbar() {
             </div>
           </div>
 
-          <NavLink href="/about">
+          <NavLink href="/about/">
   О нас
 </NavLink>
 
-          <NavLink href="/contacts">
+          <NavLink href="/contacts/">
             Контакты
           </NavLink>
 
-          <NavLink href="/game">
+          <NavLink href="/game/">
   Играть
 </NavLink>
         </nav>
@@ -282,7 +288,7 @@ export default function Navbar() {
       <div
         className={`overflow-hidden bg-[#F7F5F2] transition-all duration-300 ease-out md:hidden ${
           mobileOpen
-            ? "max-h-[650px] border-t border-black/[0.08] opacity-100"
+            ? "max-h-[820px] border-t border-black/[0.08] opacity-100"
             : "max-h-0 opacity-0"
         }`}
       >
@@ -306,7 +312,7 @@ export default function Navbar() {
           <div
             className={`overflow-hidden transition-all duration-300 ${
               mobileToolsOpen
-                ? "max-h-[460px] opacity-100"
+                ? "max-h-[640px] opacity-100"
                 : "max-h-0 opacity-0"
             }`}
           >
@@ -328,21 +334,21 @@ export default function Navbar() {
           </div>
 
           <MobileNavLink
-  href="/about"
+  href="/about/"
   onClick={closeMobileMenu}
 >
   О нас
 </MobileNavLink>
 
           <MobileNavLink
-            href="/contacts"
+            href="/contacts/"
             onClick={closeMobileMenu}
           >
             Контакты
           </MobileNavLink>
 
           <MobileNavLink
-  href="/game"
+  href="/game/"
   onClick={closeMobileMenu}
 >
   Играть

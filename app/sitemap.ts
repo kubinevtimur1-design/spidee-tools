@@ -30,6 +30,12 @@ const pages: MetadataRoute.Sitemap = [
     priority: 0.9,
   },
   {
+    url: "https://spidytools.ru/erid/",
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
     url: "https://spidytools.ru/qr/",
     lastModified,
     changeFrequency: "weekly",
