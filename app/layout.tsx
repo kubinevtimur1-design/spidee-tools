@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "./navbar";
 import Footer from "./footer";
-import GameBanner from "./game-banner";
 import "./globals.css";
 
 const inter = Inter({
@@ -118,7 +117,6 @@ export default function RootLayout({
         className={`${inter.className} min-h-screen bg-[#F7F5F2] text-[#1d1d1f] selection:bg-blue-500 selection:text-white`}
       >
         <div className="flex min-h-screen flex-col">
-          <GameBanner />
           <Navbar />
 
           <div className="flex flex-1 flex-col">

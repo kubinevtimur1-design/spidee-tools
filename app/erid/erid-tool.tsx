@@ -176,7 +176,7 @@ export default function EridTool() {
             <div
               role="radiogroup"
               aria-label="Формат"
-              className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+              className="flex flex-wrap gap-2"
             >
               {PLACEMENT_FORMATS.map((item) => {
                 const active = format === item.id;
