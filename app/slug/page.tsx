@@ -3,7 +3,7 @@ import Link from "next/link";
 import SlugTool from "./slug-tool";
 import { pageMetadata } from "../seo";
 
-const CANONICAL = "https://www.spidytools.ru/slug/";
+const CANONICAL = "https://spidytools.ru/slug/";
 const PAGE_TITLE = "Транслит в ЧПУ онлайн — генератор slug — Spidy Tools";
 const PAGE_DESCRIPTION =
   "Превратите кириллический заголовок в чистый URL: транслит, дефисы, без лишних символов. Бесплатно, без регистрации.";

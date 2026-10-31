@@ -18,6 +18,10 @@ const FOOTER_LINKS = [
     label: "Генератор UTM",
   },
   {
+    href: "/qr/",
+    label: "QR-код",
+  },
+  {
     href: "/faq-schema-generator/",
     label: "FAQ Schema",
   },

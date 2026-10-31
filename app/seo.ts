@@ -15,7 +15,10 @@ export type LivePath =
   | "/counter/"
   | "/slug/"
   | "/utm-generator/"
-  | "/pricing/"
+  | "/qr/"
+  | "/faq-schema-generator/"
+  | "/about/"
+  | "/contacts/"
   | "/game/";
 
 type PageSeo = {

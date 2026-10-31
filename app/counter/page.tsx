@@ -3,7 +3,7 @@ import Link from "next/link";
 import CounterTool from "./counter-tool";
 import { pageMetadata } from "../seo";
 
-const CANONICAL = "https://www.spidytools.ru/counter/";
+const CANONICAL = "https://spidytools.ru/counter/";
 const PAGE_TITLE = "Подсчёт символов онлайн — Spidy Tools";
 const PAGE_DESCRIPTION =
   "Бесплатный подсчёт символов онлайн с лимитами для Google, Яндекса, VK Рекламы и Telegram Ads.";

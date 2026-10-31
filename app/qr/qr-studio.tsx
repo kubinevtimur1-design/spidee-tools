@@ -504,10 +504,13 @@ export default function QrStudio() {
           </div>
 
           <p>
-            Ссылка, текст или визитка — сразу в код.
-            Настрой внешний вид и скачай результат в SVG
-            или PNG.
+            Вставь ссылку и получи QR. Бесплатно и без
+            регистрации.
           </p>
+
+          <a className="qr-crosslink" href="/utm-generator/">
+            Нужна ссылка с метками? → UTM-генератор
+          </a>
         </header>
 
         <div className="studio-layout">
@@ -1108,6 +1111,46 @@ export default function QrStudio() {
           font-size: clamp(16px, 1.55vw, 19px);
           line-height: 1.5;
           letter-spacing: -0.025em;
+        }
+
+        .qr-crosslink {
+          position: relative;
+          z-index: 0;
+          display: inline-block;
+          margin-top: 14px;
+          margin-left: 78px;
+          color: rgba(36, 36, 36, 0.52);
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+          text-decoration: none;
+          transition: color 160ms ease;
+        }
+
+        .qr-crosslink::after {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          right: -0.1em;
+          bottom: -0.05em;
+          left: -0.1em;
+          height: 0.45em;
+          background: var(--acid);
+          opacity: 0;
+          transform: rotate(-1deg) scaleX(0.75);
+          transform-origin: left;
+          transition:
+            opacity 160ms ease,
+            transform 180ms ease;
+        }
+
+        .qr-crosslink:hover {
+          color: var(--ink);
+        }
+
+        .qr-crosslink:hover::after {
+          opacity: 0.9;
+          transform: rotate(-1deg) scaleX(1);
         }
 
         .studio-layout {
@@ -1920,6 +1963,11 @@ export default function QrStudio() {
             font-size: 15px;
           }
 
+          .qr-crosslink {
+            margin-top: 12px;
+            margin-left: 2px;
+          }
+
           .settings-card {
             padding: 15px;
           }
@@ -1978,7 +2026,9 @@ export default function QrStudio() {
           .text-field,
           .action,
           .faq-card,
-          .field-meta a::after {
+          .field-meta a::after,
+          .qr-crosslink,
+          .qr-crosslink::after {
             transition: none !important;
           }
 

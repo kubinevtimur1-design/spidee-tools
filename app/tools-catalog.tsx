@@ -24,6 +24,13 @@ const TOOLS: Tool[] = [
     featured: true,
   },
   {
+    href: "/qr/",
+    title: "Генератор\nQR-кода",
+    description: "Вставь ссылку или текст и скачай QR.",
+    icon: "▣",
+    category: "Ссылки",
+  },
+  {
     href: "/faq-schema-generator/",
     title: "Генератор\nFAQ Schema",
     description: "Создавайте JSON-LD разметку для вопросов и ответов.",
