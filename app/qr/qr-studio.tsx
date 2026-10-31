@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { track } from "@/lib/metrika";
+import { useToolUse } from "@/lib/use-tool-use";
 
 const PAPER = "#F7F5F2";
 const INK = "#242424";
@@ -231,6 +233,7 @@ export default function QrStudio() {
   >(null);
 
   const payload = data.trim();
+  useToolUse("qr", payload);
   const ratio = contrast(fg, bg);
   const lowContrast = ratio < 3;
 
@@ -415,6 +418,7 @@ export default function QrStudio() {
           ? "spidy-qr.svg"
           : "spidy-qr.png",
       );
+      track("export_file");
 
       setNotice(
         extension === "svg"
@@ -452,6 +456,7 @@ export default function QrStudio() {
         !navigator.clipboard?.write
       ) {
         saveBlob(png, "spidy-qr.png");
+        track("export_file");
         setNotice(
           "Браузер не копирует картинки — PNG скачан",
         );
@@ -463,6 +468,7 @@ export default function QrStudio() {
           "image/png": png,
         }),
       ]);
+      track("export_file");
 
       setNotice("PNG скопирован");
     } catch {

@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { track } from "@/lib/metrika";
+import { useToolUse } from "@/lib/use-tool-use";
 import {
   PLATFORM_PRESETS,
   getPlatformPreset,
@@ -54,6 +56,8 @@ export default function CounterTool() {
       : 0,
   };
 
+  useToolUse("counter", combinedText.trim());
+
   const changePlatform = (nextPlatform: Platform) => {
     setPlatform(nextPlatform);
     setCopiedField(null);
@@ -97,6 +101,7 @@ export default function CounterTool() {
 
     try {
       await navigator.clipboard.writeText(value);
+      track("copy_result");
       setCopiedField(key);
 
       window.setTimeout(() => {

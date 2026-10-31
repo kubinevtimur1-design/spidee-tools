@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test app/counter/serp-truncate.test.ts app/slug/slug.test.ts app/utm-generator/utm.test.ts app/utm-generator/qr.test.ts app/utm-generator/copy-png.test.ts app/erid/erid.test.ts"
+    "test": "tsx --test app/counter/serp-truncate.test.ts app/slug/slug.test.ts app/utm-generator/utm.test.ts app/utm-generator/qr.test.ts app/utm-generator/copy-png.test.ts app/erid/erid.test.ts lib/metrika.test.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

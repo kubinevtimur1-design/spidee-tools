@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
+import { track } from "@/lib/metrika";
+import { useToolUse } from "@/lib/use-tool-use";
 import {
   ADVERTISER_KINDS,
   DISCLAIMER,
@@ -74,6 +76,10 @@ export default function EridTool() {
     [postText, postLink],
   );
 
+  useToolUse("erid-mark", marking);
+  useToolUse("erid-link", linked);
+  useToolUse("erid-post", postEmpty ? "" : JSON.stringify(post));
+
   const hasLink = Boolean(linkUrl.trim() || postLink.trim());
   const hint = placementLine(format, hasLink);
 
@@ -117,6 +123,7 @@ export default function EridTool() {
 
     try {
       await navigator.clipboard.writeText(value);
+      track("copy_result");
       setCopyError("");
 
       if (copyTimer.current) clearTimeout(copyTimer.current);

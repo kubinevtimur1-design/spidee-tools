@@ -8,6 +8,8 @@ import {
   type CSSProperties,
 } from "react";
 import Link from "next/link";
+import { track } from "@/lib/metrika";
+import { useToolUse } from "@/lib/use-tool-use";
 import {
   appendErid,
   isShortenerUrl,
@@ -166,6 +168,7 @@ function triggerDownload(blob: Blob, filename: string) {
 async function downloadPng(dataUrl: string) {
   const response = await fetch(dataUrl);
   triggerDownload(await response.blob(), "utm-qr.png");
+  track("export_file");
 }
 
 function downloadSvg(svg: string) {
@@ -175,6 +178,7 @@ function downloadSvg(svg: string) {
     }),
     "utm-qr.svg",
   );
+  track("export_file");
 }
 
 export default function UtmTool() {
@@ -297,6 +301,8 @@ export default function UtmTool() {
     return appendErid(builtUrl, eridToken);
   }, [builtUrl, eridReady, eridToken]);
 
+  useToolUse("utm", result && result !== url.trim() ? result : "");
+
   const qrReady = shouldShowQr(result);
 
   let qrAsset: QrAsset | null = null;
@@ -361,6 +367,7 @@ export default function UtmTool() {
 
     try {
       await navigator.clipboard.writeText(result);
+      track("copy_result");
 
       setCopied(true);
       setError("");
@@ -388,6 +395,7 @@ export default function UtmTool() {
     }
 
     if (outcome.status === "copied") {
+      track("export_file");
       setPngHint(null);
       setPngCopiedUrl(copiedUrl);
 
