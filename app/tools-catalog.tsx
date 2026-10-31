@@ -24,6 +24,13 @@ const TOOLS: Tool[] = [
     featured: true,
   },
   {
+    href: "/erid/",
+    title: "Маркировка\nerid",
+    description: "Собери пометку «Реклама» и проверь пост.",
+    icon: "Er",
+    category: "Ссылки",
+  },
+  {
     href: "/qr/",
     title: "Генератор\nQR-кода",
     description: "Вставь ссылку или текст и скачай QR.",

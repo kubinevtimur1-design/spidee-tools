@@ -16,6 +16,7 @@ export type LivePath =
   | "/slug/"
   | "/utm-generator/"
   | "/qr/"
+  | "/erid/"
   | "/faq-schema-generator/"
   | "/about/"
   | "/contacts/"

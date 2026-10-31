@@ -33,6 +33,12 @@ const TOOLS: Tool[] = [
     icon: "↗",
   },
   {
+    href: "/erid",
+    title: "Маркировка",
+    description: "Пометка и erid",
+    icon: "Er",
+  },
+  {
     href: "/qr",
     title: "QR-код",
     description: "Ссылка или текст в код",
@@ -282,7 +288,7 @@ export default function Navbar() {
       <div
         className={`overflow-hidden bg-[#F7F5F2] transition-all duration-300 ease-out md:hidden ${
           mobileOpen
-            ? "max-h-[650px] border-t border-black/[0.08] opacity-100"
+            ? "max-h-[820px] border-t border-black/[0.08] opacity-100"
             : "max-h-0 opacity-0"
         }`}
       >
@@ -306,7 +312,7 @@ export default function Navbar() {
           <div
             className={`overflow-hidden transition-all duration-300 ${
               mobileToolsOpen
-                ? "max-h-[460px] opacity-100"
+                ? "max-h-[640px] opacity-100"
                 : "max-h-0 opacity-0"
             }`}
           >
