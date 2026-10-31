@@ -457,6 +457,13 @@ export default function UtmTool() {
               Собирай UTM-ссылки с динамическими параметрами рекламных
               площадок и создавай QR-коды.
             </h2>
+
+            <Link
+              href="/qr/"
+              className="relative z-10 mt-4 inline-block text-xs font-medium text-[#999999] transition-colors hover:text-[#0B0B0B]"
+            >
+              Нужен просто QR? →
+            </Link>
           </div>
         </section>
 

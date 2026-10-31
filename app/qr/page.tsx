@@ -1,29 +1,30 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { pageMetadata } from "../seo";
 import QrStudio from "./qr-studio";
 
-const TITLE = "Генератор QR-кода онлайн — стили, SVG и PNG";
-const DESCRIPTION =
-  "Бесплатный генератор QR-кода: ссылка, текст или визитка. Несколько стилей, живой предпросмотр, скачивание SVG и PNG, копирование картинки. Без регистрации.";
+const CANONICAL = "https://spidytools.ru/qr/";
+const PAGE_TITLE =
+  "QR-код генератор: создать QR онлайн бесплатно | Spidy Tools";
+const PAGE_DESCRIPTION =
+  "Создай QR-код онлайн бесплатно: вставь ссылку или текст и скачай готовый код в PNG и SVG. Без регистрации, прямо в браузере.";
+
+const sharedMetadata = pageMetadata({
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
+  path: "/qr/",
+  ogTitle: PAGE_TITLE,
+  ogDescription: PAGE_DESCRIPTION,
+});
 
 export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
+  ...sharedMetadata,
   alternates: {
-    canonical: "https://spidytools.ru/qr/",
+    canonical: CANONICAL,
   },
   openGraph: {
-    title: TITLE,
-    description: DESCRIPTION,
-    url: "https://spidytools.ru/qr/",
-    siteName: "Spidy Tools",
-    locale: "ru_RU",
-    type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: TITLE,
-    description: DESCRIPTION,
+    ...sharedMetadata.openGraph,
+    url: CANONICAL,
   },
   robots: {
     index: true,
@@ -64,7 +65,7 @@ const jsonLd = {
         price: "0",
         priceCurrency: "RUB",
       },
-      description: DESCRIPTION,
+      description: PAGE_DESCRIPTION,
       featureList: [
         "Стили QR-кода",
         "Скачивание SVG",

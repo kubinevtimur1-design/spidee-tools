@@ -15,6 +15,7 @@ export type LivePath =
   | "/counter/"
   | "/slug/"
   | "/utm-generator/"
+  | "/qr/"
   | "/pricing/"
   | "/game/";
 

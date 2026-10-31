@@ -33,6 +33,12 @@ const TOOLS: Tool[] = [
     icon: "↗",
   },
   {
+    href: "/qr",
+    title: "QR-код",
+    description: "Ссылка или текст в код",
+    icon: "▣",
+  },
+  {
     href: "/faq-schema-generator",
     title: "FAQ Schema",
     description: "JSON-LD разметка FAQ",
