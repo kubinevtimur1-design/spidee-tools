@@ -8,6 +8,7 @@ import {
   onPartnerClick,
   pageHit,
   partnerGoalProps,
+  resetToolUse,
   scheduleToolUse,
   track,
   type MetrikaGoal,
@@ -108,7 +109,7 @@ test("track reaches a goal once and skips a missing ym", () => {
   delete (globalThis as { window?: unknown }).window;
 });
 
-test("scheduleToolUse fires once per settled signature", () => {
+test("scheduleToolUse fires once per view, again only after reset", () => {
   const calls: unknown[][] = [];
   (globalThis as { window?: Window }).window = {
     ym: (...args: unknown[]) => {
@@ -133,20 +134,37 @@ test("scheduleToolUse fires once per settled signature", () => {
       { tool: "slug" },
     ]);
 
-    scheduleToolUse("slug", "privet-mir");
+    scheduleToolUse("slug", "drugoj-slug");
     mock.timers.tick(TOOL_USE_DEBOUNCE_MS);
     assert.equal(calls.length, 1);
 
-    scheduleToolUse("slug", "drugoj-slug");
+    scheduleToolUse("erid-mark", "Реклама");
+    scheduleToolUse("erid-link", "https://example.ru");
+    scheduleToolUse("erid-post", "{\"ok\":true}");
     mock.timers.tick(TOOL_USE_DEBOUNCE_MS);
-    assert.equal(calls.length, 2);
+    assert.equal(calls.length, 4);
+
+    scheduleToolUse("erid-mark", "Реклама. Ещё");
+    mock.timers.tick(TOOL_USE_DEBOUNCE_MS);
+    assert.equal(calls.length, 4);
 
     scheduleToolUse("counter", "текст");
     scheduleToolUse("counter", "   ");
     mock.timers.tick(TOOL_USE_DEBOUNCE_MS);
-    assert.equal(calls.length, 2);
+    assert.equal(calls.length, 4);
+
+    resetToolUse("slug");
+    scheduleToolUse("slug", "snova");
+    mock.timers.tick(TOOL_USE_DEBOUNCE_MS);
+    assert.equal(calls.length, 5);
+    assert.equal(calls[4][3] && (calls[4][3] as { tool: string }).tool, "slug");
   } finally {
     mock.timers.reset();
+    resetToolUse("slug");
+    resetToolUse("erid-mark");
+    resetToolUse("erid-link");
+    resetToolUse("erid-post");
+    resetToolUse("counter");
     delete (globalThis as { window?: unknown }).window;
   }
 });

@@ -4,7 +4,7 @@ export const METRIKA_SRC = `https://mc.yandex.ru/metrika/tag.js?id=${METRIKA_ID}
 
 export const METRIKA_WATCH_SRC = `https://mc.yandex.ru/watch/${METRIKA_ID}`;
 
-/** Один раз на значимое изменение входа, не на каждый символ. */
+/** Пауза перед первым tool_use за просмотр. Дальше цель не повторяется. */
 export const TOOL_USE_DEBOUNCE_MS = 1800;
 
 export const METRIKA_GOALS = [
@@ -70,7 +70,7 @@ export function pageHit(url: string, referer: string) {
 }
 
 const toolUseTimers = new Map<string, ReturnType<typeof setTimeout>>();
-const toolUseSent = new Map<string, string>();
+const toolUseFired = new Set<string>();
 
 export function cancelToolUse(tool: string) {
   const timer = toolUseTimers.get(tool);
@@ -79,9 +79,20 @@ export function cancelToolUse(tool: string) {
   toolUseTimers.delete(tool);
 }
 
-/** Пустая строка отменяет ожидающий хит и ничего не шлёт. */
+/** Сброс при размонтировании: возврат на страницу — новый просмотр. */
+export function resetToolUse(tool: string) {
+  cancelToolUse(tool);
+  toolUseFired.delete(tool);
+}
+
+/**
+ * Один tool_use на ключ, после паузы на первом непустом результате.
+ * Повторные вызовы до resetToolUse ничего не шлют.
+ * Пустая строка только отменяет ожидающий таймер.
+ */
 export function scheduleToolUse(tool: string, signature: string) {
   if (typeof window === "undefined") return;
+  if (toolUseFired.has(tool)) return;
 
   cancelToolUse(tool);
 
@@ -90,8 +101,8 @@ export function scheduleToolUse(tool: string, signature: string) {
 
   const timer = setTimeout(() => {
     toolUseTimers.delete(tool);
-    if (toolUseSent.get(tool) === next) return;
-    toolUseSent.set(tool, next);
+    if (toolUseFired.has(tool)) return;
+    toolUseFired.add(tool);
     track("tool_use", { tool });
   }, TOOL_USE_DEBOUNCE_MS);
 

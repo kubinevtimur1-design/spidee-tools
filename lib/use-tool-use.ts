@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { cancelToolUse, scheduleToolUse } from "./metrika";
+import { cancelToolUse, resetToolUse, scheduleToolUse } from "./metrika";
 
 /**
  * Первый снимок страницы не считается действием.
- * Дальше — один tool_use на изменившийся результат, после паузы ввода.
+ * Первый валидный результат после паузы — один tool_use за этот маунт.
  */
 export function useToolUse(tool: string, signature: string) {
   const baseline = useRef<string | null>(null);
@@ -14,6 +14,10 @@ export function useToolUse(tool: string, signature: string) {
   if (baseline.current === null) {
     baseline.current = signature;
   }
+
+  useEffect(() => {
+    return () => resetToolUse(tool);
+  }, [tool]);
 
   useEffect(() => {
     if (!changed.current) {
