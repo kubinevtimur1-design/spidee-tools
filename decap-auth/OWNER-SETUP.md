@@ -1,8 +1,8 @@
 # Подключение входа Decap
 
-Редактор на `/admin/` уже лежит в статическом сайте, но вход выключен: в `public/admin/config.yml` нет `base_url`, и страница не загружает Decap. Так и должно оставаться, пока не выполнены шаги ниже. Секрет OAuth в репозиторий, в `config.yml` и в браузерный бандл не кладётся.
+Редактор на `/admin/` лежит в статическом сайте, но вход выключен: в `public/admin/config.yml` нет `base_url`, и страница не загружает Decap. Так и остаётся. OAuth App, Cloudflare Worker и аккаунт Decap Turbo сейчас не создаются.
 
-Пока это не сделано, владелец не может войти, создать или опубликовать материал из редактора. Сборка сайта от этого не зависит.
+Секрет OAuth в репозиторий, в `config.yml` и в браузерный бандл не кладётся. Сборка сайта от входа не зависит.
 
 ## Почему нужен отдельный адрес
 
@@ -16,13 +16,13 @@ Decap для GitHub прямо говорит, что нужна серверн�
 - https://decapcms.org/docs/backends-overview/
 - https://decapcms.org/docs/manual-initialization/
 
-Код прокси: `decap-auth/src/index.mjs`. Его не нужно выкладывать в публичный произвольный хост из этого репозитория. Его деплоит владелец на свой Cloudflare Worker.
+Код прокси: `decap-auth/src/index.mjs`. Он не задеплоен и сейчас не деплоится.
 
 Netlify Git Gateway для новой схемы не используем: у Netlify он помечен как deprecated, новые конфигурации не рекомендуются.
 
 - https://docs.netlify.com/manage/security/secure-access-to-sites/git-gateway
 
-Decap Turbo Free (1 сайт, 1 место, без карты) — официальная альтернатива, если не хочется держать Worker. В этом изменении она не включена: для неё нужен аккаунт Turbo и Site ID. CMS при этом остаётся Decap.
+Decap Turbo в этом изменении не включён. Чем его доступ к репозиторию отличается от OAuth App, написано в блокере ниже.
 
 - https://decapcms.org/docs/turbo-getting-started/
 - https://decapcms.org/turbo/
@@ -39,44 +39,47 @@ Workers Free, без карты:
 - https://developers.cloudflare.com/workers/platform/pricing/
 - https://developers.cloudflare.com/workers/platform/limits/
 
-## Шаги владельца
+## Блокер: выбранный OAuth не ограничивается репозиторием Spidy
 
-1. Создать GitHub OAuth App: https://github.com/settings/developers и https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
-   - Homepage URL: `https://spidytools.ru`
-   - Authorization callback URL: `https://<host-воркера>/callback` — тот origin, на котором будет отвечать Worker, плюс путь `/callback`.
-   - Wildcard matching для callback выключить. Иначе код можно увести на другой поддомен или подпуть. С 3 августа 2026 у старых приложений wildcard мог включиться сам; у нового его не включать.
-   - Сгенерировать Client Secret. Он показывается один раз и остаётся только у владельца.
-2. Создать Cloudflare Worker из каталога `decap-auth` (`npx wrangler deploy` из этого каталога, под аккаунтом владельца).
-3. Записать секреты, не в файлы репозитория:
+Текущая схема — бэкенд Decap `github` плюс прокси в `decap-auth/src/index.mjs` со scope `public_repo` — не умеет выдать токен только на `kubinevtimur1-design/spidee-tools`.
 
-   ```bash
-   npx wrangler secret put GITHUB_CLIENT_ID
-   npx wrangler secret put GITHUB_CLIENT_SECRET
-   ```
-
-   `ALLOWED_ORIGINS` уже задан в `wrangler.toml`: `https://spidytools.ru`, `https://www.spidytools.ru`, `http://localhost:3000`, `http://127.0.0.1:3000`. Токен уходит только на origin из этого списка.
-4. Проверить, что `https://<host-воркера>/auth` без секрета в URL редиректит на GitHub, а секрет наружу не попадает. Этот репозиторий такой запрос не выполняет.
-5. Отдельным изменением кода, через ревью Echo, раскомментировать в `public/admin/config.yml` одну строку:
-
-   ```yaml
-   base_url: https://<host-воркера>
-   ```
-
-   Без пути, без `client_id` и без секрета. После деплоя этого коммита `/admin/` начнёт загружать Decap.
-
-## Права
-
-В конфиге стоит `auth_scope: public_repo`. Для публичного репозитория этого хватает, чтобы читать и писать файлы. OAuth App не умеет сузить доступ до одного репозитория или одной папки: `public_repo` даёт запись во все публичные репозитории, куда может писать вошедший пользователь.
+`public_repo` у OAuth App — это запись в публичные репозитории, к которым у пользователя уже есть доступ, а не в один выбранный репозиторий. В протоколе авторизации OAuth App нет параметра `repository_id`.
 
 - https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps
+- https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
+- https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps
 
-Входить должен аккаунт с правом записи в `kubinevtimur1-design/spidee-tools`. Чужой аккаунт без записи увидит отказ Decap.
+Decap забирает токен в браузер: прокси на `/callback` отдает его окну редактора через `postMessage`, дальше CMS сама ходит в `api.github.com`. Список origin в `ALLOWED_ORIGINS` ограничивает только адресата `postMessage`. Он не сужает токен. Любой список репозиториев на прокси тоже не сужает токен, который уже оказался в браузере.
+
+- https://decapcms.org/docs/backends-overview/
+
+Пока владелец отдельно не согласится на запись во все свои публичные репозитории, OAuth App не создавать, Worker не деплоить, `base_url` не включать.
+
+## Что в документах ограничивает один репозиторий, и чего здесь нет
+
+GitHub App, в отличие от OAuth App, ставится на выбранные репозитории. Пользовательский токен App (`ghu_`) видит только пересечение прав пользователя и установки App. При обмене кода можно передать `repository_id` одного репозитория; если App или пользователь к нему не допущены, GitHub этот параметр молча игнорирует. Для GitHub App в авторизации допустим только scope `offline_access`, не `public_repo`.
+
+- https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps
+- https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app
+- https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-with-a-github-app-on-behalf-of-a-user
+
+Документация бэкенда Decap `github` описывает OAuth scope и передачу токена в CMS. Она не описывает GitHub App и `repository_id`. Совместимость Decap с токеном `ghu_` здесь не проверялась и не включается.
+
+Decap Turbo документирует другой контур: GitHub App Turbo ставится на выбранные репозитории, это внешняя граница доступа, а вход редактора в аккаунт Turbo сам по себе доступ к репозиториям не дает. Токен GitHub при этом держит сервер Turbo, не браузер. Для этого нужен аккаунт Turbo и установка их App. Ни того, ни другого сейчас нет, и этот PR схему на Turbo не переключает.
+
+- https://decapcms.org/docs/turbo-getting-started/
+- https://decapcms.org/docs/turbo-troubleshooting-faq/
+- https://decapcms.org/docs/github-backend/
+
+Fine-grained PAT на один репозиторий GitHub умеет, но у Decap нет описанного входа с вставкой такого токена. Это не схема этого PR.
 
 Лимит GitHub API для пользовательского токена — 5000 запросов в час. Для блога этого достаточно. Прокси не кэширует API.
 
 - https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 
 ## Что будет после включения
+
+Ниже — поведение уже после отдельного разрешения включить вход. Сейчас вход не включается.
 
 Режим публикации `simple`: сохранение сразу коммитит в `main` от имени вошедшего пользователя, не от `GITHUB_TOKEN`. Такой push запускает `.github/workflows/deploy.yml`. Ограничение «события от `GITHUB_TOKEN` не запускают другие workflow» к этим коммитам не относится.
 

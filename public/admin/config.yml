@@ -1,6 +1,8 @@
-# Вход выключен, пока нет base_url. Не добавляйте сюда client_secret, токены и пароли.
-# После деплоя OAuth-прокси владельцем сюда пишется только origin, без пути:
-# base_url: https://<worker-host>
+# Вход выключен. Не добавляйте сюда client_secret, токены и пароли.
+# base_url не включать, пока нет отдельного согласия владельца:
+# auth_scope public_repo — это запись во все его публичные репозитории.
+# Прокси не может сузить токен, который Decap получает в браузер.
+# Подробности: decap-auth/OWNER-SETUP.md
 local_backend: false
 publish_mode: simple
 backend:

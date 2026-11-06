@@ -41,9 +41,9 @@ function mountBlocked(document) {
   );
   var list = document.createElement("ol");
   [
-    "Владелец создаёт GitHub OAuth App и бесплатный Cloudflare Worker по инструкции decap-auth/OWNER-SETUP.md.",
-    "Секрет остаётся только в секрете Worker. В репозиторий попадает origin прокси, без client_secret.",
-    "После этого отдельное изменение config.yml с base_url проходит ревью кода. Тогда /admin загрузит Decap.",
+    "Схема Decap + OAuth App со scope public_repo даёт запись во все публичные репозитории аккаунта, не только в Spidy.",
+    "Токен уходит в браузер. Список репозиториев на прокси это не ограничивает.",
+    "OAuth App, Worker и base_url не включаются, пока владелец отдельно не разрешит такой доступ или не будет выбрана другая схема. См. decap-auth/OWNER-SETUP.md.",
   ].forEach(function (step) {
     list.appendChild(element(document, "li", "", step));
   });
@@ -53,7 +53,7 @@ function mountBlocked(document) {
       document,
       "p",
       "",
-      "Публикация материалов после настройки — коммит в main от аккаунта владельца. Отдельное одобрение каждой статьи не требуется. Код по-прежнему идёт через ревью.",
+      "Вход остаётся выключенным. Редактор не получает токен GitHub и не публикует материалы.",
     ),
   );
   root.appendChild(wrap);
