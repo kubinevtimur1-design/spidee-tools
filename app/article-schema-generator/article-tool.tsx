@@ -217,10 +217,9 @@ export default function ArticleTool() {
             <span className="text-[#555555]">Article Schema</span>
           </nav>
 
-          <h1 className="max-w-4xl text-[40px] font-bold uppercase leading-[0.9] tracking-[-0.06em] text-[#3A3A3A] sm:text-7xl lg:text-8xl">
-            Article
-            <br />
-            Schema
+          <h1 className="max-w-4xl text-[1.75rem] font-bold leading-[1.08] tracking-[-0.04em] text-[#3A3A3A] min-[390px]:text-[2rem] sm:text-5xl lg:text-6xl">
+            Генератор микроразметки статьи{" "}
+            <span className="whitespace-nowrap">(Article Schema)</span>
           </h1>
 
           <p className="mt-7 max-w-xl text-base font-normal leading-6 text-[#777777] sm:text-lg">

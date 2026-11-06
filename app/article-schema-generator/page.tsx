@@ -4,7 +4,7 @@ import ArticleTool from "./article-tool";
 
 const CANONICAL = "https://spidytools.ru/article-schema-generator/";
 const PAGE_TITLE =
-  "Генератор разметки статьи (Article JSON-LD) онлайн | Spidy Tools";
+  "Генератор микроразметки статьи (Article JSON-LD) онлайн | Spidy Tools";
 const PAGE_DESCRIPTION =
   "Собери JSON-LD для статьи, записи блога или новости: заголовок, автор, даты, картинка и URL. Код собирается в браузере. Бесплатно, без регистрации.";
 
@@ -12,7 +12,7 @@ const sharedMetadata = pageMetadata({
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   path: "/article-schema-generator/",
-  ogTitle: PAGE_TITLE,
+  ogTitle: "Генератор разметки статьи (Article JSON-LD) онлайн | Spidy Tools",
   ogDescription: PAGE_DESCRIPTION,
 });
 
