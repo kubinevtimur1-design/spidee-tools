@@ -1,19 +1,12 @@
-function readDecapBaseUrl(yaml) {
+function readTurboSiteId(yaml) {
   var lines = String(yaml).split(/\r?\n/);
+  var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   for (var i = 0; i < lines.length; i += 1) {
     var trimmed = lines[i].trim();
     if (!trimmed || trimmed.charAt(0) === "#") continue;
-    var match = trimmed.match(/^base_url:\s*(\S+)\s*$/);
+    var match = trimmed.match(/^turbo_site_id:\s*(\S+)\s*$/);
     if (!match) continue;
-    try {
-      var url = new URL(match[1]);
-      if (url.protocol !== "https:") return null;
-      if (url.username || url.password || url.search || url.hash) return null;
-      if (url.pathname !== "/" && url.pathname !== "") return null;
-      return url.origin;
-    } catch {
-      return null;
-    }
+    return uuid.test(match[1]) ? match[1] : null;
   }
   return null;
 }
@@ -36,14 +29,14 @@ function mountBlocked(document) {
       document,
       "p",
       "",
-      "Кнопка входа в Decap намеренно не показывается. GitHub требует сервер для обмена кода на токен, а секрет OAuth нельзя класть в статический сайт.",
+      "Кнопка входа в Decap намеренно не показывается: в config.yml ещё нет turbo_site_id.",
     ),
   );
   var list = document.createElement("ol");
   [
-    "Схема Decap + OAuth App со scope public_repo даёт запись во все публичные репозитории аккаунта, не только в Spidy.",
-    "Токен уходит в браузер. Список репозиториев на прокси это не ограничивает.",
-    "OAuth App, Worker и base_url не включаются, пока владелец отдельно не разрешит такой доступ или не будет выбрана другая схема. См. decap-auth/OWNER-SETUP.md.",
+    "Схема — Decap Turbo Free и бэкенд turbo-github. Свой OAuth-прокси со scope public_repo снят.",
+    "Картинки хранятся только в git, в public/blog/media.",
+    "Вход включится после UUID сайта Turbo в config.yml. До установки GitHub App список прав смотрит Echo. См. decap-auth/OWNER-SETUP.md.",
   ].forEach(function (step) {
     list.appendChild(element(document, "li", "", step));
   });
@@ -53,7 +46,7 @@ function mountBlocked(document) {
       document,
       "p",
       "",
-      "Вход остаётся выключенным. Редактор не получает токен GitHub и не публикует материалы.",
+      "Вход остаётся выключенным. Редактор не входит в Turbo и не публикует материалы.",
     ),
   );
   root.appendChild(wrap);
@@ -84,17 +77,17 @@ async function bootDecapGate(document, fetchImpl) {
     return { enabled: false };
   }
   var yaml = await response.text();
-  var baseUrl = readDecapBaseUrl(yaml);
-  if (!baseUrl) {
+  var siteId = readTurboSiteId(yaml);
+  if (!siteId) {
     mountBlocked(document);
     return { enabled: false };
   }
   mountCms(document);
-  return { enabled: true, baseUrl: baseUrl };
+  return { enabled: true, siteId: siteId };
 }
 
 if (typeof window !== "undefined") {
-  window.readDecapBaseUrl = readDecapBaseUrl;
+  window.readTurboSiteId = readTurboSiteId;
   window.bootDecapGate = bootDecapGate;
   if (window.document && !window.__DECAP_GATE_TEST__) {
     window.bootDecapGate(window.document, function (url, options) {

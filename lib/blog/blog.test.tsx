@@ -214,10 +214,12 @@ test("admin config has no secret and does not enable login", () => {
     path.join(process.cwd(), "public/admin/config.yml"),
     "utf8",
   );
-  assert.equal(/^\s*(?:client_secret|access_token|GITHUB_)\s*:/im.test(yaml), false);
-  assert.match(yaml, /auth_scope: public_repo/);
-  assert.match(yaml, /repo: kubinevtimur1-design\/spidee-tools/);
-  assert.equal(/^\s*base_url:/m.test(yaml), false);
+  assert.equal(/^\s*(?:client_secret|access_token|GITHUB_|auth_scope|base_url)\s*:/im.test(yaml), false);
+  assert.match(yaml, /name: turbo-github/);
+  assert.match(yaml, /media_folder: public\/blog\/media/);
+  assert.match(yaml, /public_folder: \/blog\/media/);
+  assert.equal(/^\s*turbo_site_id:/m.test(yaml), false);
+  assert.equal(/^\s*media_library:/m.test(yaml), false);
 
   const sandbox = vm.createContext({
     window: {
@@ -236,7 +238,7 @@ test("admin config has no secret and does not enable login", () => {
   const gateWindow = (
     sandbox as {
       window: {
-        readDecapBaseUrl: (value: string) => string | null;
+        readTurboSiteId: (value: string) => string | null;
         bootDecapGate: (
           document: unknown,
           fetchImpl: (url: string) => Promise<{ ok: boolean; text: () => Promise<string> }>,
@@ -244,13 +246,11 @@ test("admin config has no secret and does not enable login", () => {
       };
     }
   ).window;
-  assert.equal(gateWindow.readDecapBaseUrl(yaml), null);
+  const siteId = "12345678-1234-4123-8123-123456789abc";
+  assert.equal(gateWindow.readTurboSiteId(yaml), null);
+  assert.equal(gateWindow.readTurboSiteId(`turbo_site_id: ${siteId}`), siteId);
   assert.equal(
-    gateWindow.readDecapBaseUrl("base_url: https://auth.example"),
-    "https://auth.example",
-  );
-  assert.equal(
-    gateWindow.readDecapBaseUrl("# base_url: https://auth.example\nbase_url: https://auth.example/callback"),
+    gateWindow.readTurboSiteId("# turbo_site_id: " + siteId + "\nturbo_site_id: not-a-uuid"),
     null,
   );
 

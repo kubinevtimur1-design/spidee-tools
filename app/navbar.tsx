@@ -51,6 +51,12 @@ const TOOLS: Tool[] = [
     icon: "{}",
   },
   {
+    href: "/article-schema-generator/",
+    title: "Article Schema",
+    description: "JSON-LD статьи",
+    icon: "{}",
+  },
+  {
     title: "Выгрузка meta",
     description: "Парсинг тегов по URL",
     icon: "#",
@@ -292,7 +298,7 @@ export default function Navbar() {
       <div
         className={`overflow-hidden bg-[#F7F5F2] transition-all duration-300 ease-out md:hidden ${
           mobileOpen
-            ? "max-h-[820px] border-t border-black/[0.08] opacity-100"
+            ? "max-h-[980px] border-t border-black/[0.08] opacity-100"
             : "max-h-0 opacity-0"
         }`}
       >
@@ -316,7 +322,7 @@ export default function Navbar() {
           <div
             className={`overflow-hidden transition-all duration-300 ${
               mobileToolsOpen
-                ? "max-h-[640px] opacity-100"
+                ? "max-h-[760px] opacity-100"
                 : "max-h-0 opacity-0"
             }`}
           >
