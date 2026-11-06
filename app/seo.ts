@@ -18,6 +18,7 @@ export type LivePath =
   | "/qr/"
   | "/erid/"
   | "/faq-schema-generator/"
+  | "/article-schema-generator/"
   | "/about/"
   | "/contacts/"
   | "/game/";

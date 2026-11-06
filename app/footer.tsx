@@ -30,6 +30,10 @@ const FOOTER_LINKS = [
     label: "FAQ Schema",
   },
   {
+    href: "/article-schema-generator/",
+    label: "Article Schema",
+  },
+  {
     href: "/about/",
     label: "О нас",
   },
