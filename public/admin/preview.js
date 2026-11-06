@@ -93,12 +93,44 @@
     return pathname + "/";
   }
 
-  function safeImage(src) {
+  function persistedMediaPath(src) {
+    if (typeof src !== "string") return null;
     var value = text(src);
-    if (value.indexOf("/blog/media/") === 0 && value.indexOf("..") === -1) return value;
-    if (value.indexOf("https://") === 0 && sanitizeHref(value)) return value;
-    if (value.indexOf("data:image/") === 0) return value;
-    return null;
+    if (!value || /[\u0000-\u001F\u007F\\]/.test(value)) return null;
+    var lower = value.toLowerCase();
+    if (lower.indexOf("javascript:") === 0 || lower.indexOf("data:") === 0 || lower.indexOf("vbscript:") === 0) {
+      return null;
+    }
+    try {
+      var url = new URL(value, "https://spidytools.ru");
+      var sameHost = url.hostname === "spidytools.ru" || url.hostname === "www.spidytools.ru";
+      if (!sameHost || url.username || url.password) return null;
+      if (url.pathname.indexOf("/blog/media/") !== 0 || url.pathname.indexOf("..") !== -1) return null;
+      var path = url.pathname;
+      if (path !== "/" && path.charAt(path.length - 1) !== "/" && !/\.[a-z0-9]+$/i.test(path)) {
+        path += "/";
+      }
+      return path + url.search + url.hash;
+    } catch {
+      return null;
+    }
+  }
+
+  function resolveCover(raw, getAsset) {
+    var persisted = persistedMediaPath(raw);
+    var resolved = null;
+    if (typeof getAsset === "function") {
+      try {
+        var next = getAsset(raw);
+        if (typeof next === "string") resolved = next;
+      } catch {
+        resolved = null;
+      }
+    }
+    var pendingUpload = typeof resolved === "string" && resolved.indexOf("blob:") === 0;
+    if (typeof raw !== "string") return pendingUpload ? resolved : null;
+    if (!persisted) return null;
+    return pendingUpload ? resolved : persisted;
   }
 
   function formatRuDate(iso) {
@@ -379,11 +411,11 @@
     return null;
   }
 
-  function renderSpidyPreview(data, h) {
+  function renderSpidyPreview(data, h, getAsset) {
     var author = text(data.author);
     var date = text(data.date);
     var updated = text(data.updated);
-    var cover = safeImage(data.cover);
+    var cover = resolveCover(data.cover, getAsset);
     var blocks = Array.isArray(data.blocks) ? data.blocks : [];
     return h(
       "main",
@@ -452,7 +484,7 @@
 
   var PostPreview = root.createClass({
     render: function () {
-      return renderSpidyPreview(entryData(this.props.entry), root.h);
+      return renderSpidyPreview(entryData(this.props.entry), root.h, this.props.getAsset);
     },
   });
 

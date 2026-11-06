@@ -20,8 +20,10 @@ function loadPreview(register: boolean) {
             registerPreviewStyle(url: string) {
               this.styles.push(url);
             },
-            registerPreviewTemplate(name: string) {
+            component: null as null | { render: () => React.ReactElement },
+            registerPreviewTemplate(name: string, component: { render: () => React.ReactElement }) {
               this.templates.push(name);
+              this.component = component;
             },
           },
           createClass<T>(spec: T) {
@@ -41,7 +43,11 @@ function loadPreview(register: boolean) {
   );
   return previewWindow as {
     renderSpidyPreview: (data: unknown, h: typeof React.createElement) => React.ReactElement;
-    CMS?: { styles: string[]; templates: string[] };
+    CMS?: {
+      styles: string[];
+      templates: string[];
+      component: null | { render: (this: { props: Record<string, unknown> }) => React.ReactElement };
+    };
   };
 }
 
@@ -53,8 +59,7 @@ const fixture = {
   author: FIXTURE_AUTHOR,
   date: "2026-01-15",
   updated: "",
-  cover:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='420'%3E%3Crect width='800' height='420' fill='%23e7e2da'/%3E%3C/svg%3E",
+  cover: "/blog/media/fixture-cover.webp",
   coverAlt: FIXTURE_COVER_ALT,
   blocks: [
     {
@@ -107,7 +112,9 @@ test("registered Decap preview renders site blocks from a labeled fixture", () =
   assert.match(html, new RegExp(FIXTURE_AUTHOR));
   assert.match(html, /<time[^>]*dateTime="2026-01-15"/);
   assert.match(html, /15 января 2026/);
+  assert.match(html, /src="\/blog\/media\/fixture-cover\.webp"/);
   assert.match(html, new RegExp(`alt="${FIXTURE_COVER_ALT}"`));
+  assert.equal(html.includes("data:image"), false);
   assert.match(html, /data-block="note"/);
   assert.match(html, /data-block="comparison"/);
   assert.match(html, /@fixture/);
@@ -153,4 +160,74 @@ test("Decap registration uses the same preview and the real draft stays unlabele
   assert.equal(empty.includes(FIXTURE_AUTHOR), false);
   assert.equal(/<time[\s>]/.test(empty), false);
   assert.equal(/<img[\s>]/.test(empty), false);
+});
+
+test("preview cover matches the site media policy and trusted blob uploads", () => {
+  const preview = loadPreview(true);
+  const render = preview.CMS?.component?.render;
+  if (!render) throw new Error("registered preview is missing");
+  const draw: (this: { props: Record<string, unknown> }) => React.ReactElement = render;
+
+  function htmlFor(
+    cover: unknown,
+    getAsset?: (value: unknown) => string,
+  ) {
+    const entry = {
+      getIn(path: string[]) {
+        const data: Record<string, unknown> = {
+          title: "Проверка обложки",
+          draft: false,
+          cover,
+          cover_alt: "alt",
+          blocks: [],
+        };
+        let current: unknown = { data };
+        for (const key of path) {
+          if (current == null || typeof current !== "object") return undefined;
+          current = (current as Record<string, unknown>)[key];
+        }
+        return current;
+      },
+    };
+    const view = draw.call({
+      props: {
+        entry,
+        getAsset: getAsset ?? ((value: unknown) => value),
+      },
+    });
+    return renderToStaticMarkup(view);
+  }
+
+  assert.match(htmlFor("/blog/media/cover.webp"), /src="\/blog\/media\/cover\.webp"/);
+  assert.match(
+    htmlFor("https://spidytools.ru/blog/media/cover.webp"),
+    /src="\/blog\/media\/cover\.webp"/,
+  );
+  assert.equal(/<img[\s>]/.test(htmlFor("https://evil.example/a.png")), false);
+  assert.equal(/<img[\s>]/.test(htmlFor("data:image/png;base64,aaaa")), false);
+  assert.equal(/<img[\s>]/.test(htmlFor("/blog/media/../secret.txt")), false);
+  assert.equal(/<img[\s>]/.test(htmlFor("/blog/media/%2e%2e/secret.txt")), false);
+
+  assert.match(
+    htmlFor("/blog/media/new.webp", () => "blob:http://localhost/pending"),
+    /src="blob:http:\/\/localhost\/pending"/,
+  );
+  assert.match(
+    htmlFor({ path: "/blog/media/new.webp" }, () => "blob:http://localhost/object"),
+    /src="blob:http:\/\/localhost\/object"/,
+  );
+  assert.match(
+    htmlFor("/blog/media/new.webp", () => "https://cdn.example/new.webp"),
+    /src="\/blog\/media\/new\.webp"/,
+  );
+  assert.equal(
+    /<img[\s>]/.test(
+      htmlFor("data:image/png;base64,aaaa", () => "blob:http://localhost/laundered"),
+    ),
+    false,
+  );
+  assert.equal(
+    /<img[\s>]/.test(htmlFor("https://evil.example/a.png", () => "blob:http://localhost/laundered")),
+    false,
+  );
 });
