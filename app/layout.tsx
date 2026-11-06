@@ -77,6 +77,11 @@ export const metadata: Metadata = {
       "Подсчёт символов, транслит в ЧПУ и генератор UTM в один клик. Бесплатно, без регистрации.",
     images: ["/hero-glass.webp"],
   },
+
+  verification: {
+    google: "hs9bS0xf0dbU1gKLvGgd4XUPRo2J-I-21kq32Op9qtI",
+    yandex: "c03d0fd9f317dd71",
+  },
 };
 
 export default function RootLayout({
