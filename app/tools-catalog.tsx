@@ -45,6 +45,13 @@ const TOOLS: Tool[] = [
     category: "Данные",
   },
   {
+    href: "/article-schema-generator/",
+    title: "Генератор\nArticle Schema",
+    description: "Собери JSON-LD для статьи, блога или новости.",
+    icon: "{}",
+    category: "Данные",
+  },
+  {
     href: "/counter/",
     title: "Подсчёт\nсимволов",
     description: "Проверяйте длину Title, Description и любого текста.",

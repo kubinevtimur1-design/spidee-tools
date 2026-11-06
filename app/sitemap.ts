@@ -48,6 +48,12 @@ const pages: MetadataRoute.Sitemap = [
     priority: 0.9,
   },
   {
+    url: "https://spidytools.ru/article-schema-generator/",
+    lastModified: "2026-11-06",
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
     url: "https://spidytools.ru/about/",
     lastModified,
     changeFrequency: "monthly",
