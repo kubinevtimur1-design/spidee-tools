@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+import { blogSitemapEntries, loadArticles } from "@/lib/blog/content";
+
 export const dynamic = "force-static";
 
 const lastModified = "2026-10-24";
@@ -74,5 +76,5 @@ const pages: MetadataRoute.Sitemap = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return pages;
+  return [...pages, ...blogSitemapEntries(loadArticles())];
 }

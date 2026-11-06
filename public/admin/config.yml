@@ -1,0 +1,190 @@
+# Вход выключен, пока нет turbo_site_id. Не добавляйте секреты и токены.
+# Картинки только коммитом в public/blog/media. Внешнее S3 не используется.
+# OAuth-прокси со scope public_repo снят и не деплоится.
+# Подробности: decap-auth/OWNER-SETUP.md
+local_backend: false
+publish_mode: simple
+backend:
+  name: turbo-github
+  branch: main
+  # turbo_site_id: UUID с вкладки Overview. Пока строки нет, /admin не загружает Decap.
+media_folder: public/blog/media
+public_folder: /blog/media
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+collections:
+  - name: posts
+    label: Материалы
+    label_singular: Материал
+    folder: content/blog
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    slug: "{{fields.slug}}"
+    summary: "{{title}}"
+    fields:
+      - label: Заголовок
+        name: title
+        widget: string
+        hint: "Это единственный H1 страницы. Не дублируйте его заголовком первого уровня в тексте."
+      - label: SEO title
+        name: seo_title
+        widget: string
+        required: false
+        hint: "Если пусто, в title и Article JSON-LD пойдёт основной заголовок."
+      - label: Описание
+        name: description
+        widget: text
+        required: false
+        hint: "Короткий абзац для каталога, meta description и JSON-LD. Для публикации поле обязательно."
+      - label: Адрес
+        name: slug
+        widget: string
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Только латиница в нижнем регистре, цифры и дефис']
+        hint: "Имя файла задаётся при первом сохранении и потом само не меняется. Старый адрес добавляйте в список алиасов."
+      - label: Рубрика
+        name: section
+        widget: string
+        required: false
+      - label: Черновик
+        name: draft
+        widget: boolean
+        default: true
+        hint: "Включённый черновик не попадает в каталог, sitemap и на сайт. Файл Markdown при этом остаётся в публичном Git и не является секретом. Снять галочку можно, когда заполнены описание, автор и дата. Публикация и снятие с публикации — это коммит в main, без отдельного одобрения статьи."
+      - label: Автор
+        name: author
+        widget: string
+        required: false
+        hint: "Для черновика можно оставить пустым. Публикация без автора будет остановлена сборкой."
+      - label: Дата публикации
+        name: date
+        widget: datetime
+        required: false
+        date_format: YYYY-MM-DD
+        time_format: false
+        hint: "Для черновика можно оставить пустым. Не придумывайте дату, пока материал не готов."
+      - label: Дата обновления
+        name: updated
+        widget: datetime
+        required: false
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: Обложка
+        name: cover
+        widget: image
+        required: false
+        hint: "Файл попадёт в репозиторий. Git LFS редактор не поддерживает."
+      - label: Alt обложки
+        name: cover_alt
+        widget: string
+        required: false
+        hint: "Обязателен, если обложка выбрана."
+      - label: Ключевые слова
+        name: keywords
+        widget: list
+        required: false
+        field:
+          label: Фраза
+          name: keyword
+          widget: string
+      - label: Старые адреса
+        name: aliases
+        widget: list
+        required: false
+        hint: "Статический GitHub Pages не делает HTTP 301. Для алиаса собирается страница с canonical и meta refresh."
+        field:
+          label: Адрес
+          name: alias
+          widget: string
+      - label: Блоки
+        name: blocks
+        widget: list
+        types:
+          - label: Текст
+            name: markdown
+            widget: object
+            fields:
+              - label: Текст
+                name: text
+                widget: markdown
+                hint: "Обычный Markdown. HTML и скрипты на сайте не исполняются."
+          - label: Заметка
+            name: note
+            widget: object
+            fields:
+              - label: Тон
+                name: tone
+                widget: select
+                options: [info, warning]
+                default: info
+              - label: Текст
+                name: text
+                widget: markdown
+          - label: Кнопка
+            name: cta
+            widget: object
+            fields:
+              - label: Подпись
+                name: lead
+                widget: string
+                required: false
+              - label: Текст кнопки
+                name: label
+                widget: string
+              - label: Ссылка
+                name: href
+                widget: string
+                hint: "Путь сайта с / или https-ссылка. javascript: и data: сборка отклонит."
+          - label: Карточка инструмента
+            name: tool
+            widget: object
+            fields:
+              - label: Инструмент
+                name: tool
+                widget: select
+                options:
+                  - label: Генератор UTM-меток
+                    value: utm-generator
+                  - label: Маркировка erid
+                    value: erid
+                  - label: QR-код
+                    value: qr
+                  - label: Подсчёт символов
+                    value: counter
+                  - label: Транслит и ЧПУ
+                    value: slug
+                  - label: FAQ Schema
+                    value: faq-schema
+              - label: Подпись
+                name: caption
+                widget: string
+                required: false
+          - label: Таблица
+            name: comparison
+            widget: object
+            fields:
+              - label: Подпись
+                name: caption
+                widget: string
+                required: false
+              - label: Колонки
+                name: columns
+                widget: list
+                field:
+                  label: Колонка
+                  name: column
+                  widget: string
+              - label: Строки
+                name: rows
+                widget: list
+                field:
+                  label: Ячейки
+                  name: cells
+                  widget: list
+                  field:
+                    label: Ячейка
+                    name: cell
+                    widget: string

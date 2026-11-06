@@ -1,0 +1,53 @@
+:root {
+  color: #242424;
+  background: #f7f5f2;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.gate {
+  box-sizing: border-box;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 4rem;
+}
+
+.gate h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.gate p {
+  line-height: 1.6;
+}
+
+.gate .status {
+  display: inline-block;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: #0b0b0b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+}
+
+.gate ol {
+  padding-left: 1.2rem;
+}
+
+.gate li + li {
+  margin-top: 0.45rem;
+}
+
+.gate code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
