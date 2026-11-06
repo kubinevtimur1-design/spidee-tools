@@ -7,16 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test app/counter/serp-truncate.test.ts app/slug/slug.test.ts app/utm-generator/utm.test.ts app/utm-generator/qr.test.ts app/utm-generator/copy-png.test.ts app/erid/erid.test.ts lib/metrika.test.ts"
+    "test": "tsx --test app/slug/slug.test.ts app/utm-generator/utm.test.ts app/utm-generator/qr.test.ts app/utm-generator/copy-png.test.ts app/erid/erid.test.ts lib/metrika.test.ts lib/blog/blog.test.tsx decap-auth/oauth.test.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
+    "gray-matter": "^4.0.3",
     "next": "16.4.3",
     "qr-code-styling": "^1.9.2",
     "qrcode": "^1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "three": "^0.186.1"
   },
   "devDependencies": {

@@ -233,6 +233,10 @@ export default function Navbar() {
             </div>
           </div>
 
+          <NavLink href="/blog/">
+            Материалы
+          </NavLink>
+
           <NavLink href="/about/">
   О нас
 </NavLink>
@@ -332,6 +336,10 @@ export default function Navbar() {
               ))}
             </div>
           </div>
+
+          <MobileNavLink href="/blog/" onClick={closeMobileMenu}>
+            Материалы
+          </MobileNavLink>
 
           <MobileNavLink
   href="/about/"

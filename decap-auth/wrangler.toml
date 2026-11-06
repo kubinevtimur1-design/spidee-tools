@@ -1,0 +1,7 @@
+name = "spidy-decap-oauth"
+main = "src/index.mjs"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://spidytools.ru,https://www.spidytools.ru,http://localhost:3000,http://127.0.0.1:3000"
